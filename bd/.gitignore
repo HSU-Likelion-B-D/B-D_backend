@@ -36,3 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
+### logs ###
+logs/
+
+### 민감 정보 포함 파일 - 커밋 금지 ###
+**/application-secret.properties
