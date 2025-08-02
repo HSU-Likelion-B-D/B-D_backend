@@ -16,9 +16,12 @@ public class Influencer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //기본키
+    @Column(name = "INFLUENCER_ID")
+    private Long influencerId; //기본키
 
     @OneToOne
     @JoinColumn(name = "userId") //user 엔티티의 기본키 이름인 userId와 매핑한다.
     private User user;
+
+    //https://github.com/HSU-Likelion-B-D/B-D_backend.git
 }
