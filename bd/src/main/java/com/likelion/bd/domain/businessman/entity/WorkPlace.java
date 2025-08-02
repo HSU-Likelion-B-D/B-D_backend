@@ -37,4 +37,8 @@ public class WorkPlace {
 
     @Column(name = "ONLINE_STORE")
     private Boolean onlineStore; //사업장 온라인스토어 유무
+
+    @OneToOne
+    @JoinColumn(name = "businessmanId")
+    private BusinessMan businessman; //자영업자 외래키
 }
