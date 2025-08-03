@@ -33,15 +33,15 @@ public class SuccessResponse<T>  extends BaseResponse {
         return new SuccessResponse<>(null, SuccessResponseCode.SUCCESS_OK);
     }
 
-    public static SuccessResponse<?> from(String message) { // data X, message 커스텀
+    public static SuccessResponse<?> emptyCustom (String message) { // data X, message 커스텀
         return new SuccessResponse<>(null, SuccessResponseCode.SUCCESS_OK, message);
     }
 
-    public static <T> SuccessResponse<T> from(T data) { // data 0, message 기본
+    public static <T> SuccessResponse<T> ok(T data) { // data 0, message 기본
         return new SuccessResponse<>(data, SuccessResponseCode.SUCCESS_OK);
     }
 
-    public static <T> SuccessResponse<T> of(T data, String message) { // data 0, message 커스텀
+    public static <T> SuccessResponse<T> okCustom(T data, String message) { // data 0, message 커스텀
         return new SuccessResponse<>(data, SuccessResponseCode.SUCCESS_OK, message);
     }
 
