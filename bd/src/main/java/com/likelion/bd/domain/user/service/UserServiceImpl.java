@@ -3,8 +3,10 @@ package com.likelion.bd.domain.user.service;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.exception.DuplicateEmailException;
+import com.likelion.bd.domain.user.exception.DuplicateNicknameException;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.domain.user.web.dto.CheckEmailReq;
+import com.likelion.bd.domain.user.web.dto.CheckNicknameReq;
 import com.likelion.bd.domain.user.web.dto.UserSignupReq;
 import com.likelion.bd.domain.user.web.dto.UserSignupRes;
 import com.likelion.bd.global.external.s3.S3Service;
@@ -26,6 +28,14 @@ public class UserServiceImpl implements UserService {
     public void checkEmail(CheckEmailReq checkEmailReq) {
         if (userRepository.existsByEmail(checkEmailReq.getEmail())) {
             throw new DuplicateEmailException();
+        }
+    }
+
+    // 닉네임 중복 검사
+    @Override
+    public void checkNickname(CheckNicknameReq checkNicknameReq) {
+        if (userRepository.existsByNickname(checkNicknameReq.getNickname())) {
+            throw new DuplicateNicknameException();
         }
     }
 
