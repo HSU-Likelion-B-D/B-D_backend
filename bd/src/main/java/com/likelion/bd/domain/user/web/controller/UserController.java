@@ -1,6 +1,7 @@
 package com.likelion.bd.domain.user.web.controller;
 
 import com.likelion.bd.domain.user.service.UserService;
+import com.likelion.bd.domain.user.web.dto.CheckEmailReq;
 import com.likelion.bd.domain.user.web.dto.UserSignupReq;
 import com.likelion.bd.domain.user.web.dto.UserSignupRes;
 import com.likelion.bd.global.response.SuccessResponse;
@@ -17,6 +18,19 @@ public class UserController {
 
     private final UserService userService;
 
+    // 이메일 중복 체크 확인
+    @PostMapping("/check-email")
+    public ResponseEntity<SuccessResponse<?>> check(
+            @RequestBody @Valid CheckEmailReq checkEmailReq
+    ) {
+        userService.checkEmail(checkEmailReq);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.emptyCustom("사용 가능한 이메일입니다."));
+    }
+
+    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse<?>> signup(
             @ModelAttribute @Valid UserSignupReq userSignupReq
@@ -27,6 +41,6 @@ public class UserController {
         // 반환
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(SuccessResponse.from(userSignupRes));
+                .body(SuccessResponse.ok(userSignupRes));
     }
 }
