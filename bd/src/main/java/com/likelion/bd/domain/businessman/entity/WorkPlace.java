@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,4 +43,13 @@ public class WorkPlace {
     @OneToOne
     @JoinColumn(name = "businessmanId")
     private BusinessMan businessman; //자영업자 외래키
+
+    @OneToMany(mappedBy = "workPlace", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkPlaceCategory> categoryList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "workPlace", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkPlaceMood> moodList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "workPlace", cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<WorkPlacePromotion> promotionList = new ArrayList<>();
 }
