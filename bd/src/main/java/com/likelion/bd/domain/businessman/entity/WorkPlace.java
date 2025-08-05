@@ -22,22 +22,22 @@ public class WorkPlace {
     @Column(name = "WORKPLACE_ID")
     private Long workplaceId;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false)
     private String name; //사업장 이름
 
-    @Column(name = "ADDRESS")
+    @Column(name = "ADDRESS", nullable = false)
     private String address; //사업장 주소
 
     @Column(name = "DETAIL_ADDRESS")
     private String detailAddress; //사업장 상세주소
 
-    @Column(name = "OPEN_TIME")
+    @Column(name = "OPEN_TIME", nullable = false)
     private LocalTime openTime; //사업장 오픈시간
 
-    @Column(name = "CLOSE_TIME")
+    @Column(name = "CLOSE_TIME", nullable = false)
     private LocalTime closeTime; //사업장 마감시간
 
-    @Column(name = "ONLINE_STORE")
+    @Column(name = "ONLINE_STORE", nullable = false)
     private Boolean onlineStore; //사업장 온라인스토어 유무
 
     @OneToOne
