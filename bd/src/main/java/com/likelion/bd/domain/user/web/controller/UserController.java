@@ -2,6 +2,7 @@ package com.likelion.bd.domain.user.web.controller;
 
 import com.likelion.bd.domain.user.service.UserService;
 import com.likelion.bd.domain.user.web.dto.CheckEmailReq;
+import com.likelion.bd.domain.user.web.dto.CheckNicknameReq;
 import com.likelion.bd.domain.user.web.dto.UserSignupReq;
 import com.likelion.bd.domain.user.web.dto.UserSignupRes;
 import com.likelion.bd.global.response.SuccessResponse;
@@ -28,6 +29,18 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(SuccessResponse.emptyCustom("사용 가능한 이메일입니다."));
+    }
+
+    // 닉네임 중복 체크 확인
+    @PostMapping("/check-nickname")
+    public ResponseEntity<SuccessResponse<?>> check(
+            @RequestBody @Valid CheckNicknameReq checkNicknameReq
+    ) {
+        userService.checkNickname(checkNicknameReq);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.emptyCustom("사용 가능한 닉네임입니다."));
     }
 
     // 회원가입
