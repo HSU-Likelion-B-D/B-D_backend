@@ -24,4 +24,10 @@ public class WorkPlaceCategory {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    public WorkPlaceCategory(WorkPlace workPlace, Category category) {
+        this.workPlace = workPlace;
+        this.category = category;
+    }
+
 }
