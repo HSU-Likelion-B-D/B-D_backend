@@ -5,10 +5,7 @@ import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.exception.DuplicateEmailException;
 import com.likelion.bd.domain.user.exception.DuplicateNicknameException;
 import com.likelion.bd.domain.user.repository.UserRepository;
-import com.likelion.bd.domain.user.web.dto.CheckEmailReq;
-import com.likelion.bd.domain.user.web.dto.CheckNicknameReq;
-import com.likelion.bd.domain.user.web.dto.UserSignupReq;
-import com.likelion.bd.domain.user.web.dto.UserSignupRes;
+import com.likelion.bd.domain.user.web.dto.*;
 import com.likelion.bd.global.external.s3.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -70,5 +67,11 @@ public class UserServiceImpl implements UserService {
                 saveUser.getUserId(),
                 saveUser.getRole()
         );
+    }
+
+    // 로그인
+    @Override
+    public UserSigninRes signin(UserSigninReq userSigninReq) {
+        return null;
     }
 }

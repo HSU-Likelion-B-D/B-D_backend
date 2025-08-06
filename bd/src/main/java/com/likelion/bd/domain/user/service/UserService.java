@@ -1,9 +1,6 @@
 package com.likelion.bd.domain.user.service;
 
-import com.likelion.bd.domain.user.web.dto.CheckEmailReq;
-import com.likelion.bd.domain.user.web.dto.CheckNicknameReq;
-import com.likelion.bd.domain.user.web.dto.UserSignupReq;
-import com.likelion.bd.domain.user.web.dto.UserSignupRes;
+import com.likelion.bd.domain.user.web.dto.*;
 
 public interface UserService {
 
@@ -15,4 +12,7 @@ public interface UserService {
 
     // 회원 가입
     UserSignupRes signup(UserSignupReq userSignupReq);
+
+    // 로그인
+    UserSigninRes signin(UserSigninReq userSigninReq);
 }
