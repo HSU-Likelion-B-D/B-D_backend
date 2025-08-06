@@ -24,4 +24,9 @@ public class WorkPlacePromotion {
     @ManyToOne
     @JoinColumn(name = "promotion_id", nullable = false)
     private Promotion promotion;
+
+    public WorkPlacePromotion(WorkPlace workPlace, Promotion promotion) {
+        this.workplace = workPlace;
+        this.promotion = promotion;
+    }
 }
