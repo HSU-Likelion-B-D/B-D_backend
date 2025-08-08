@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "activity_adIndustry")
-public class ActivityAdIndustry {
+@Table(name = "activity_contentStyle")
+public class ActivityContentStyle {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +22,6 @@ public class ActivityAdIndustry {
     private Activity activity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ADINDUSTRY_ID", nullable = false)
-    private AdIndustry adIndustry;
+    @JoinColumn(name = "CONTENTSTYLE_ID", nullable = false)
+    private ContentStyle contentStyle;
 }

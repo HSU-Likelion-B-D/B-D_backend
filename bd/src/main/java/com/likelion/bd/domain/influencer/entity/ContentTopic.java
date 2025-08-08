@@ -19,5 +19,5 @@ public class ContentTopic {
     private Long contentTopicId;
 
     @Column(name = "NAME", nullable = false)
-    private String name; // 컨텐츠 카테고리 이름
+    private String name; // 컨텐츠 분야 이름
 }

@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "adIndustry")
-public class AdIndustry {
+@Table(name = "contentStyle")
+public class ContentStyle {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ADINDUSTRY_ID")
-    private Long adIndustryId;
+    @Column(name = "CONTENTSTYLE_ID")
+    private Long contentStyleId;
 
     @Column(name = "NAME", nullable = false)
-    private String name; // 광고 분야 이름
+    private String name; // 컨텐츠 스타일 이름
 }
