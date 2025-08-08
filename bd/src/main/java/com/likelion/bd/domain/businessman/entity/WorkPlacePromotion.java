@@ -19,14 +19,14 @@ public class WorkPlacePromotion {
 
     @ManyToOne
     @JoinColumn(name = "workplace_id", nullable = false)
-    private WorkPlace workplace;
+    private WorkPlace workPlace;
 
     @ManyToOne
     @JoinColumn(name = "promotion_id", nullable = false)
     private Promotion promotion;
 
     public WorkPlacePromotion(WorkPlace workPlace, Promotion promotion) {
-        this.workplace = workPlace;
+        this.workPlace = workPlace;
         this.promotion = promotion;
     }
 }

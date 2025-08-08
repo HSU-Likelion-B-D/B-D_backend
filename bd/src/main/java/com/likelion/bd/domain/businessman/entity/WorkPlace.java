@@ -44,12 +44,15 @@ public class WorkPlace {
     @JoinColumn(name = "businessmanId")
     private BusinessMan businessman; //자영업자 외래키
 
+    @Builder.Default
     @OneToMany(mappedBy = "workPlace", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkPlaceCategory> categoryList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "workPlace", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkPlaceMood> moodList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "workPlace", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<WorkPlacePromotion> promotionList = new ArrayList<>();
 }

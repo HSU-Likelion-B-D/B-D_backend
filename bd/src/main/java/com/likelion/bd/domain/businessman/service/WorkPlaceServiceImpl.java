@@ -46,7 +46,13 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
         //BusinessMan을 작성 시 User를 외래키로 관리하면 userId로 BusinessMan을 찾는 쿼리가 필요할 수 있음
         //아래와 같다.
         BusinessMan businessMan = businessManRepository.findByUser(user)
-                .orElseThrow(() -> new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
+                .orElseGet(() -> {
+                    // 이 블록은 "없을 때만 실행"
+                    BusinessMan bm = BusinessMan.builder().user(user).build();
+                    return businessManRepository.save(bm);
+                });
+// 여기서 bm은 무조건 존재 (기존 or 신규)
+
 
         //빌더패턴에선 직접적으로 try-catch를 사용하지 못하므로 사전에 openTime,closeTime을 검증해줘야한다.
         LocalTime openTime;
