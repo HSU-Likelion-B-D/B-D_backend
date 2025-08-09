@@ -34,7 +34,7 @@ public class WorkPlaceController {
         //우선 JWT는 제외하고 개발함 JWT는 나중에 추가하면 될듯
         WorkPlaceUpdateRes workPlaceUpdateRes = workPlaceService.updateWorkPlace(workPlaceUpdateReq, workPlaceId);
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
+                .status(HttpStatus.OK)
                 .body(SuccessResponse.ok(workPlaceUpdateRes));
     }
 }
