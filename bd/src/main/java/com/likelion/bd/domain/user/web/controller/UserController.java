@@ -1,10 +1,7 @@
 package com.likelion.bd.domain.user.web.controller;
 
 import com.likelion.bd.domain.user.service.UserService;
-import com.likelion.bd.domain.user.web.dto.CheckEmailReq;
-import com.likelion.bd.domain.user.web.dto.CheckNicknameReq;
-import com.likelion.bd.domain.user.web.dto.UserSignupReq;
-import com.likelion.bd.domain.user.web.dto.UserSignupRes;
+import com.likelion.bd.domain.user.web.dto.*;
 import com.likelion.bd.global.response.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +52,19 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(SuccessResponse.ok(userSignupRes));
+    }
+
+    // 로그인
+    @PostMapping("/signin")
+    public ResponseEntity<SuccessResponse<?>> signin(
+            @RequestBody @Valid UserSigninReq userSigninReq
+    ) {
+        // 서비스
+        UserSigninRes userSigninRes = userService.signin(userSigninReq);
+
+        // 반환
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.ok(userSigninRes));
     }
 }
