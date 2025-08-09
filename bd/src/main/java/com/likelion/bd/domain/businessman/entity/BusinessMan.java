@@ -22,4 +22,7 @@ public class BusinessMan {
     @OneToOne
     @JoinColumn(name = "userId")
     private User user;
+
+//    @OneToMany(mappedBy = "businessman", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<WorkPlace> workPlaces = new ArrayList<>();
 }

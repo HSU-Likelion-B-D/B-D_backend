@@ -44,6 +44,10 @@ public class WorkPlace {
     @JoinColumn(name = "businessmanId")
     private BusinessMan businessman; //자영업자 외래키
 
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "businessman_id", nullable = false)
+//    private BusinessMan businessman;
+
     @Builder.Default
     @OneToMany(mappedBy = "workPlace", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkPlaceCategory> categoryList = new ArrayList<>();
