@@ -23,17 +23,25 @@ public class Activity extends BaseEntity {
     @JoinColumn(name = "INFLUENCER_ID", nullable = false)
     private Influencer influencer;
 
-    @Column(name = "SNS_URL", nullable = false)
-    private String snsUrl; // SNS 주소
-
-    @Column(name = "FOLLOWER_COUNT", nullable = false)
-    private Long followerCount; // 팔로워 수
-
     @Column(name = "ACTIVITY_NAME", nullable = false)
     private String activityName; // 활동명
 
-    @Column(name = "ACCOUNT", nullable = false)
-    private String account; // 계좌
+    @Column(name = "SNS_URL", nullable = false)
+    private String snsUrl; // SNS 주소
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "FOLLOWER_COUNT_RANGE", nullable = false)
+    private FollowerCountRange followerCountRange; // 팔로워 수 범위
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "UPLOAD_FREQUENCY", nullable = false)
+    private UploadFrequency uploadFrequency; // 주 업로드 횟수
+
+    @Column(name = "BANKNAME", nullable = false)
+    private String bankName; // 은행명
+
+    @Column(name = "ACCOUNT_NUMBER", nullable = false)
+    private String accountNumber; // 계좌번호
 }
 
 
