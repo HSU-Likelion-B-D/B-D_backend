@@ -9,6 +9,7 @@ import com.likelion.bd.domain.user.exception.NotFoundEmailException;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.domain.user.web.dto.*;
 import com.likelion.bd.global.external.s3.S3Service;
+import com.likelion.bd.global.jwt.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final S3Service s3Service;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 이메일 중복 검사
     @Override
@@ -85,6 +87,8 @@ public class UserServiceImpl implements UserService {
             throw new InvalidPasswordException();
         }
 
-        return new UserSigninRes(user.getUserId());
+        String token = jwtTokenProvider.createToken(user);
+
+        return new UserSigninRes(token);
     }
 }
