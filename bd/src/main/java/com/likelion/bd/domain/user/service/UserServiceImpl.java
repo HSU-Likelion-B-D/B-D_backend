@@ -4,11 +4,10 @@ import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.exception.DuplicateEmailException;
 import com.likelion.bd.domain.user.exception.DuplicateNicknameException;
+import com.likelion.bd.domain.user.exception.InvalidPasswordException;
+import com.likelion.bd.domain.user.exception.NotFoundEmailException;
 import com.likelion.bd.domain.user.repository.UserRepository;
-import com.likelion.bd.domain.user.web.dto.CheckEmailReq;
-import com.likelion.bd.domain.user.web.dto.CheckNicknameReq;
-import com.likelion.bd.domain.user.web.dto.UserSignupReq;
-import com.likelion.bd.domain.user.web.dto.UserSignupRes;
+import com.likelion.bd.domain.user.web.dto.*;
 import com.likelion.bd.global.external.s3.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -70,5 +69,22 @@ public class UserServiceImpl implements UserService {
                 saveUser.getUserId(),
                 saveUser.getRole()
         );
+    }
+
+    // 로그인
+    @Override
+    public UserSigninRes signin(UserSigninReq userSigninReq) {
+        // 회원 존재 여부 확인
+        User user = userRepository.findByEmail(userSigninReq.getEmail())
+                .orElseThrow(NotFoundEmailException::new);
+
+        // 사용자가 입력한 비밀번호(평문)와 DB에 저장된 암호화된 비밀번호를 비교
+        // BCrypt는 같은 비밀번호여도 매번 다른 해시를 생성하기 때문에 단순 equals로 비교할 수 없음
+        // matches()는 내부적으로 입력값을 해싱한 뒤, 저장된 해시와 비교하여 true/false를 반환함
+        if (!bCryptPasswordEncoder.matches(userSigninReq.getPassword(), user.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+
+        return new UserSigninRes(user.getUserId());
     }
 }

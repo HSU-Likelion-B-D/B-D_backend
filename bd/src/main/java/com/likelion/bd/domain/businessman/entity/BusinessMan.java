@@ -23,6 +23,7 @@ public class BusinessMan {
     @JoinColumn(name = "userId")
     private User user;
 
+//    WorkPlace가 businessman_id FK를 가짐(owning side)
 //    @OneToMany(mappedBy = "businessman", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<WorkPlace> workPlaces = new ArrayList<>();
 }
