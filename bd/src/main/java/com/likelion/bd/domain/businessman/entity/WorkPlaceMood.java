@@ -24,4 +24,9 @@ public class WorkPlaceMood {
     @ManyToOne
     @JoinColumn(name = "mood_id", nullable = false)
     private Mood mood;
+
+    public WorkPlaceMood(WorkPlace workPlace, Mood mood) {
+        this.workPlace = workPlace;
+        this.mood = mood;
+    }
 }
