@@ -4,14 +4,17 @@ import com.likelion.bd.domain.businessman.entity.*;
 import com.likelion.bd.domain.businessman.repository.*;
 import com.likelion.bd.domain.businessman.web.dto.WorkPlaceCreateReq;
 import com.likelion.bd.domain.businessman.web.dto.WorkPlaceCreateRes;
+import com.likelion.bd.domain.businessman.web.dto.WorkPlaceUpdateReq;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.response.code.BusinessManErrorResponseCode;
+import com.likelion.bd.global.response.code.ErrorResponseCode;
 import com.likelion.bd.global.response.code.UserErrorResponseCode;
 import com.likelion.bd.global.response.code.WorkPlaceErrorReponseCode;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,4 +130,81 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
                 saved.getPromotionList().stream().map(wpp -> wpp.getPromotion().getId()).toList()
         );
     }
+
+    @Transactional
+    @Override
+    public void updateWorkPlace(WorkPlaceUpdateReq workPlaceUpdateReq, Long workPlaceId) {
+
+        //유저 조회
+        User user = userRepository.findById(workPlaceUpdateReq.getUserId())
+                .orElseThrow( ()-> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
+
+
+        //사업자인지 검증
+        if(user.getRole() != UserRoleType.BUSINESS) {
+            throw new CustomException(UserErrorResponseCode.NO_BUSINESS_PERMISSION_403);
+        }
+
+        //사업자 조회
+        BusinessMan businessMan = businessManRepository.findByUser(user)
+                .orElseThrow(() -> new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
+
+        //사업장 조회
+        WorkPlace workPlace = workPlaceRepository.findById(workPlaceId)
+                .orElseThrow(()-> new CustomException(WorkPlaceErrorReponseCode.WORKPLACE_NOT_FOUND_404));
+
+        //사업장에 있는 사업자 id와 위에서 조회한 사업자의 id가 맞는지 확인
+        if(!workPlace.getBusinessman().getBusinessManId().equals(businessMan.getBusinessManId())) {
+            throw new CustomException(ErrorResponseCode.ACCESS_DENIED_REQUEST);
+        }
+
+        //기본 정보 수정
+        //빌더패턴에선 직접적으로 try-catch를 사용하지 못하므로 사전에 openTime,closeTime을 검증해줘야한다.
+        LocalTime openTime;
+        LocalTime closeTime;
+        try {
+            openTime = LocalTime.parse(workPlaceUpdateReq.getOpenTime());
+            closeTime = LocalTime.parse(workPlaceUpdateReq.getCloseTime());
+        } catch (DateTimeParseException e) {
+            throw new CustomException(WorkPlaceErrorReponseCode.INVALID_TIME_FORMAT_400);
+        }
+
+        //새로운 정보 저장
+        workPlace = WorkPlace.builder()
+                .name(workPlaceUpdateReq.getName())
+                .address(workPlaceUpdateReq.getAddress())
+                .detailAddress(workPlaceUpdateReq.getDetailAddress())
+                .openTime(openTime)
+                .closeTime(closeTime)
+                .onlineStore(workPlaceUpdateReq.getIsOnline())
+                .build();
+
+        //각 카테고리, 분위기, 홍보방식 리스트 초기화
+        workPlace.getCategoryList().clear();
+        workPlace.getMoodList().clear();
+        workPlace.getPromotionList().clear();
+
+        //새로운 카테고리 저장
+        if(workPlaceUpdateReq.getCategoryIds() != null) {
+            for (Long categoryId : workPlaceUpdateReq.getCategoryIds()) {
+                Category category = categoryRepository.findById(categoryId)
+                        .orElseThrow( ()-> new CustomException(WorkPlaceErrorReponseCode.CATEGORY_NOT_FOUND_404));
+                workPlace.getCategoryList().add(new WorkPlaceCategory(workPlace, category));
+            }
+        }
+
+        //새로운 분위기 저장
+        if(workPlaceUpdateReq.getMoodIds() != null) {
+            for (Long moodId : workPlaceUpdateReq.getMoodIds()) {
+                Mood mood = moodRepository.findById(moodId)
+                        .orElseThrow(()->new CustomException(WorkPlaceErrorReponseCode.MOOD_NOT_FOUND_404));
+                workPlace.getMoodList().add(new WorkPlaceMood(workPlace, mood));
+            }
+        }
+
+        //새로운 홍보방식 저장
+
+    }
+
+
 }
