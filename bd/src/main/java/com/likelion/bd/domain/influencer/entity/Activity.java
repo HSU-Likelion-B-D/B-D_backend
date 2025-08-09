@@ -42,6 +42,12 @@ public class Activity extends BaseEntity {
 
     @Column(name = "ACCOUNT_NUMBER", nullable = false)
     private String accountNumber; // 계좌번호
+
+    @Column(name = "MIN_AMOUNT", nullable = false)
+    private Long minAmount; // 최소 희망 금액
+
+    @Column(name = "MAX_AMOUNT", nullable = false)
+    private Long maxAmount; // 최대 희망 금액
 }
 
 
