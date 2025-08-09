@@ -38,7 +38,7 @@ public class WorkPlace {
     private LocalTime closeTime; //사업장 마감시간
 
     @Column(name = "ONLINE_STORE", nullable = false)
-    private Boolean onlineStore; //사업장 온라인스토어 유무
+    private Boolean isOnline; //사업장 온라인스토어 유무
 
     @OneToOne
     @JoinColumn(name = "businessmanId")
@@ -59,4 +59,14 @@ public class WorkPlace {
     @Builder.Default
     @OneToMany(mappedBy = "workPlace", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<WorkPlacePromotion> promotionList = new ArrayList<>();
+
+    public void updateBasicInfo(String name, String address, String detailAddress,
+                                LocalTime openTime, LocalTime closeTime, Boolean isOnline){
+        this.name = name;
+        this.address = address;
+        this.detailAddress = detailAddress;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+        this.isOnline = isOnline;
+    }
 }
