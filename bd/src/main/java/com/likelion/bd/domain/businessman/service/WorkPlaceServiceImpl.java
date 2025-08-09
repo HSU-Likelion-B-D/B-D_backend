@@ -5,6 +5,7 @@ import com.likelion.bd.domain.businessman.repository.*;
 import com.likelion.bd.domain.businessman.web.dto.WorkPlaceCreateReq;
 import com.likelion.bd.domain.businessman.web.dto.WorkPlaceCreateRes;
 import com.likelion.bd.domain.businessman.web.dto.WorkPlaceUpdateReq;
+import com.likelion.bd.domain.businessman.web.dto.WorkPlaceUpdateRes;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.repository.UserRepository;
@@ -75,7 +76,7 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
                 .detailAddress(workPlaceCreateReq.getDetailAddress())
                 .openTime(openTime)
                 .closeTime(closeTime)
-                .onlineStore(workPlaceCreateReq.getIsOnline())
+                .isOnline(workPlaceCreateReq.getIsOnline())
                 .build();
 
 
@@ -119,7 +120,7 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
                 //LocalTime에서 String으로 변환하면 자동으로 HH:MM형태로 파싱된다.
                 saved.getOpenTime().toString(),
                 saved.getCloseTime().toString(),
-                saved.getOnlineStore(),
+                saved.getIsOnline(),
 
                 //중간매핑테이블에서 각 카테고리, 분위기, 홍보방식의 id만 추출해서 전달한다.
                 // 1. saved.getCategoryList()로 WorkPlaceCategory와 같은 중간매핑테이블을 가져온다.
@@ -133,7 +134,7 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
 
     @Transactional
     @Override
-    public void updateWorkPlace(WorkPlaceUpdateReq workPlaceUpdateReq, Long workPlaceId) {
+    public WorkPlaceUpdateRes updateWorkPlace(WorkPlaceUpdateReq workPlaceUpdateReq, Long workPlaceId) {
 
         //유저 조회
         User user = userRepository.findById(workPlaceUpdateReq.getUserId())
@@ -170,14 +171,22 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
         }
 
         //새로운 정보 저장
-        workPlace = WorkPlace.builder()
-                .name(workPlaceUpdateReq.getName())
-                .address(workPlaceUpdateReq.getAddress())
-                .detailAddress(workPlaceUpdateReq.getDetailAddress())
-                .openTime(openTime)
-                .closeTime(closeTime)
-                .onlineStore(workPlaceUpdateReq.getIsOnline())
-                .build();
+//        workPlace = WorkPlace.builder()
+//                .name(workPlaceUpdateReq.getName())
+//                .address(workPlaceUpdateReq.getAddress())
+//                .detailAddress(workPlaceUpdateReq.getDetailAddress())
+//                .openTime(openTime)
+//                .closeTime(closeTime)
+//                .onlineStore(workPlaceUpdateReq.getIsOnline())
+//                .build();
+        workPlace.updateBasicInfo(
+                workPlaceUpdateReq.getName(),
+                workPlaceUpdateReq.getAddress(),
+                workPlaceUpdateReq.getDetailAddress(),
+                openTime,
+                closeTime,
+                workPlaceUpdateReq.getIsOnline()
+        );
 
         //각 카테고리, 분위기, 홍보방식 리스트 초기화
         workPlace.getCategoryList().clear();
@@ -203,8 +212,25 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
         }
 
         //새로운 홍보방식 저장
+        if(workPlaceUpdateReq.getPromotionIds() != null){
+            for(Long promotionId : workPlaceUpdateReq.getPromotionIds()){
+                Promotion promotion = promotionRepository.findById(promotionId)
+                        .orElseThrow(()->new CustomException(WorkPlaceErrorReponseCode.PROMOTION_NOT_FOUND_404));
+                workPlace.getPromotionList().add(new WorkPlacePromotion(workPlace,promotion));
+            }
+        }
 
+        return new WorkPlaceUpdateRes(
+                businessMan.getBusinessManId(),
+                workPlace.getName(),
+                workPlace.getAddress(),
+                workPlace.getDetailAddress(),
+                workPlace.getOpenTime().toString(),
+                workPlace.getCloseTime().toString(),
+                workPlace.getIsOnline(),
+                workPlace.getCategoryList().stream().map(wpc -> wpc.getCategory().getId()).toList(),
+                workPlace.getMoodList().stream().map(wpm -> wpm.getMood().getId()).toList(),
+                workPlace.getPromotionList().stream().map(wpp -> wpp.getPromotion().getId()).toList()
+        );
     }
-
-
 }
