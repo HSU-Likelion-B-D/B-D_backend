@@ -3,9 +3,11 @@ package com.likelion.bd.global.init;
 import com.likelion.bd.domain.influencer.entity.ContentStyle;
 import com.likelion.bd.domain.influencer.entity.ContentTopic;
 import com.likelion.bd.domain.influencer.entity.Platform;
+import com.likelion.bd.domain.influencer.entity.PreferTopic;
 import com.likelion.bd.domain.influencer.repository.ContentStyleRepository;
 import com.likelion.bd.domain.influencer.repository.ContentTopicRepository;
 import com.likelion.bd.domain.influencer.repository.PlatformRepository;
+import com.likelion.bd.domain.influencer.repository.PreferTopicRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -22,6 +24,7 @@ public class DataInitializer implements ApplicationRunner {
     private final PlatformRepository platformRepository;
     private final ContentTopicRepository contentTopicRepository;
     private final ContentStyleRepository contentStyleRepository;
+    private final PreferTopicRepository preferTopicRepository;
 
     @Override
     @Transactional
@@ -58,6 +61,18 @@ public class DataInitializer implements ApplicationRunner {
             styleNames.forEach(name -> {
                 ContentStyle style = ContentStyle.builder().name(name).build();
                 contentStyleRepository.save(style);
+            });
+        }
+
+        // 선호 분야 데이터 초기화
+        if (preferTopicRepository.count() == 0) {
+            List<String> industryNames = Arrays.asList(
+                    "음식/음료", "쇼핑/소매", "반려동물", "뷰티/서비스",
+                    "운동/건강", "문화/체험", "콘텐츠", "기타"
+            );
+            industryNames.forEach(name -> {
+                PreferTopic topic = PreferTopic.builder().name(name).build();
+                preferTopicRepository.save(topic);
             });
         }
     }
