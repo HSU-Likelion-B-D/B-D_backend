@@ -65,6 +65,28 @@ public class Activity extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActivityPreferTopic> activityPreferTopicList = new ArrayList<>();
+
+    // -------------------------------------------------------------------------------------
+
+    public void addActivityPlatform(ActivityPlatform activityPlatform) {
+        this.activityPlatformList.add(activityPlatform);
+        activityPlatform.setActivity(this);
+    }
+
+    public void addActivityContentTopic(ActivityContentTopic activityContentTopic) {
+        this.activityContentTopicList.add(activityContentTopic);
+        activityContentTopic.setActivity(this);
+    }
+
+    public void addActivityContentStyle(ActivityContentStyle activityContentStyle) {
+        this.activityContentStyleList.add(activityContentStyle);
+        activityContentStyle.setActivity(this);
+    }
+
+    public void addActivityPreferTopic(ActivityPreferTopic activityPreferTopic) {
+        this.activityPreferTopicList.add(activityPreferTopic);
+        activityPreferTopic.setActivity(this);
+    }
 }
 
 
