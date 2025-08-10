@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
         // s3에 저장된 이미지 url 받아오기
         String imageUrl = null;
-        if (userSignupReq.getProfileImage() != null) {
+        if (userSignupReq.getProfileImage() != null && !userSignupReq.getProfileImage().isEmpty()) {
             imageUrl = s3Service.uploadImageToS3(userSignupReq.getProfileImage());
         }
 
