@@ -53,6 +53,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/user/signup", "/user/signin",
                                 "/user/check-email", "/user/check-nickname").permitAll()
+                        .requestMatchers("/influencer/create").hasRole("INFLUENCER")
 //                        .requestMatchers("/api/").permitAll()
 //                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 전부 토큰 필요
