@@ -50,14 +50,6 @@ public class InfluencerServiceImpl implements InfluencerService {
 
         // -------------------------------------------------------------------------------------------------------
 
-        Influencer influencer = Influencer.builder()
-                .user(user)
-                .activity(activity)
-                .build();
-        influencerRepository.save(influencer);
-
-        // -------------------------------------------------------------------------------------------------------
-
         for (Long platformId : activityCreateReq.getPlatformIds()) {
             Platform platform = platformRepository.findById(platformId)
                     .orElseThrow(() -> new CustomException(ActivityErrorCode.PLATFORM_NOT_FOUND_404));
@@ -67,7 +59,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                     .platform(platform)
                     .build();
 
-            activity.getActivityPlatformList().add(ap);
+            activity.addActivityPlatform(ap);
         }
 
         for (Long contentTopicId : activityCreateReq.getContentTopicIds()) {
@@ -79,7 +71,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                     .contentTopic(contentTopic)
                     .build();
 
-            activity.getActivityContentTopicList().add(act);
+            activity.addActivityContentTopic(act);
         }
 
         for (Long contentStyleId : activityCreateReq.getContentStyleIds()) {
@@ -91,7 +83,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                     .contentStyle(contentStyle)
                     .build();
 
-            activity.getActivityContentStyleList().add(acs);
+            activity.addActivityContentStyle(acs);
         }
 
         for (Long preferTopicId : activityCreateReq.getPreferTopicIds()) {
@@ -103,10 +95,18 @@ public class InfluencerServiceImpl implements InfluencerService {
                     .preferTopic(preferTopic)
                     .build();
 
-            activity.getActivityPreferTopicList().add(apt);
+            activity.addActivityPreferTopic(apt);
         }
 
         activityRepository.save(activity);
+        // -------------------------------------------------------------------------------------------------------
+
+        Influencer influencer = Influencer.builder()
+                .user(user)
+                .activity(activity)
+                .build();
+        influencerRepository.save(influencer);
+
         // -------------------------------------------------------------------------------------------------------
 
         return new ActivityCreateRes(
