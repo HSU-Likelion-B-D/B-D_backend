@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -18,10 +21,6 @@ public class Activity extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ACTIVITY_ID")
     private Long activityId;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "INFLUENCER_ID", nullable = false)
-    private Influencer influencer;
 
     @Column(name = "ACTIVITY_NAME", nullable = false)
     private String activityName; // 활동명
@@ -48,6 +47,24 @@ public class Activity extends BaseEntity {
 
     @Column(name = "MAX_AMOUNT", nullable = false)
     private Long maxAmount; // 최대 희망 금액
+
+    // -------------------------------------------------------------------------------------
+
+    @Builder.Default
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActivityPlatform> activityPlatformList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActivityContentTopic> activityContentTopicList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActivityContentStyle> activityContentStyleList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActivityPreferTopic> activityPreferTopicList = new ArrayList<>();
 }
 
 
