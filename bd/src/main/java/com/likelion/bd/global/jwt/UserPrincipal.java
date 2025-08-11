@@ -1,6 +1,7 @@
 package com.likelion.bd.global.jwt;
 
 import com.likelion.bd.domain.user.entity.User;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Getter // 토큰에서 userId 를 가져오기 위한 어노테이션
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
 

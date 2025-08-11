@@ -9,8 +9,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "activity_platform")
-public class ActivityPlatform {
+@Table(name = "activity_preferTopic")
+public class ActivityPreferTopic {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +20,6 @@ public class ActivityPlatform {
     private Activity activity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PLATFORM_ID", nullable = false)
-    private Platform platform;
+    @JoinColumn(name = "CONTENTTOPIC_ID", nullable = false)
+    private PreferTopic preferTopic;
 }
