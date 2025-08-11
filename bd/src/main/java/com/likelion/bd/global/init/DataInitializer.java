@@ -1,5 +1,11 @@
 package com.likelion.bd.global.init;
 
+import com.likelion.bd.domain.businessman.entity.Category;
+import com.likelion.bd.domain.businessman.entity.Mood;
+import com.likelion.bd.domain.businessman.entity.Promotion;
+import com.likelion.bd.domain.businessman.repository.CategoryRepository;
+import com.likelion.bd.domain.businessman.repository.MoodRepository;
+import com.likelion.bd.domain.businessman.repository.PromotionRepository;
 import com.likelion.bd.domain.influencer.entity.ContentStyle;
 import com.likelion.bd.domain.influencer.entity.ContentTopic;
 import com.likelion.bd.domain.influencer.entity.Platform;
@@ -25,6 +31,9 @@ public class DataInitializer implements ApplicationRunner {
     private final ContentTopicRepository contentTopicRepository;
     private final ContentStyleRepository contentStyleRepository;
     private final PreferTopicRepository preferTopicRepository;
+    private final CategoryRepository categoryRepository;
+    private final MoodRepository moodRepository;
+    private final PromotionRepository promotionRepository;
 
     @Override
     @Transactional
@@ -73,6 +82,41 @@ public class DataInitializer implements ApplicationRunner {
             industryNames.forEach(name -> {
                 PreferTopic topic = PreferTopic.builder().name(name).build();
                 preferTopicRepository.save(topic);
+            });
+        }
+
+        //자영업자의 사업장 업종(카테고리) 데이터 초기화
+        if(categoryRepository.count() == 0) {
+            List<String> categoryNames = Arrays.asList(
+                    "음식/음료", "쇼핑/소매", "반려동물", "뷰티/서비스",
+                    "운동/건강", "문화/체험", "콘텐츠", "기타"
+            );
+            categoryNames.forEach(name -> {
+                Category category = Category.builder().name(name).build();
+                categoryRepository.save(category);
+            });
+        }
+
+        //자영업자의 사업장 분위기 데이터 초기화
+        if(moodRepository.count() == 0) {
+            List<String> moodNames = Arrays.asList(
+                    "감성적인", "빈티지", "러블리", "힙한", "직장인", "자연친화적", "조용한", "활기찬",
+                    "10대많음", "20대많음", "가족단위", "친구모임많음"
+            );
+            moodNames.forEach(name -> {
+                Mood mood = Mood.builder().name(name).build();
+                moodRepository.save(mood);
+            });
+        }
+
+        //자영업자의 사업장 홍보방식 데이터 초기화
+        if(promotionRepository.count() == 0) {
+            List<String> promotionNames = Arrays.asList(
+                    "인스타그램", "유튜브", "블로그", "숏폼", "VLOG", "기타"
+            );
+            promotionNames.forEach(name -> {
+                Promotion promotion = Promotion.builder().name(name).build();
+                promotionRepository.save(promotion);
             });
         }
     }
