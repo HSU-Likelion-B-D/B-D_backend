@@ -8,7 +8,7 @@ import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.response.code.Influencer.ActivityErrorCode;
-import com.likelion.bd.global.response.code.UserErrorResponseCode;
+import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

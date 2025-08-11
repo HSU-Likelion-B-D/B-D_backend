@@ -10,12 +10,11 @@ import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
-import com.likelion.bd.global.response.code.BusinessManErrorResponseCode;
+import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponseCode;
 import com.likelion.bd.global.response.code.ErrorResponseCode;
-import com.likelion.bd.global.response.code.UserErrorResponseCode;
-import com.likelion.bd.global.response.code.WorkPlaceErrorReponseCode;
+import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
+import com.likelion.bd.global.response.code.businessMan.WorkPlaceErrorReponseCode;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
