@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ActivityErrorCode implements BaseResponseCode {
+public enum ActivityErrorResponseCode implements BaseResponseCode {
 
     PLATFORM_NOT_FOUND_404("PLATFORM_NOT_FOUND_404",404,"해당 플랫폼이 존재하지 않습니다."),
     CONTENTTOPIC_NOT_FOUND_404("CONTENTTOPIC_NOT_FOUND_404",404,"해당 콘텐츠 분야가 존재하지 않습니다."),

@@ -8,7 +8,7 @@ import com.likelion.bd.domain.influencer.web.dto.InfluencerMyPageRes;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
-import com.likelion.bd.global.response.code.Influencer.ActivityErrorCode;
+import com.likelion.bd.global.response.code.Influencer.ActivityErrorResponseCode;
 import com.likelion.bd.global.response.code.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,7 +55,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 
         for (Long platformId : activityCreateReq.getPlatformIds()) {
             Platform platform = platformRepository.findById(platformId)
-                    .orElseThrow(() -> new CustomException(ActivityErrorCode.PLATFORM_NOT_FOUND_404));
+                    .orElseThrow(() -> new CustomException(ActivityErrorResponseCode.PLATFORM_NOT_FOUND_404));
 
             ActivityPlatform ap = ActivityPlatform.builder()
                     .activity(activity)
@@ -67,7 +67,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 
         for (Long contentTopicId : activityCreateReq.getContentTopicIds()) {
             ContentTopic contentTopic = contentTopicRepository.findById(contentTopicId)
-                    .orElseThrow(() -> new CustomException(ActivityErrorCode.CONTENTTOPIC_NOT_FOUND_404));
+                    .orElseThrow(() -> new CustomException(ActivityErrorResponseCode.CONTENTTOPIC_NOT_FOUND_404));
 
             ActivityContentTopic act = ActivityContentTopic.builder()
                     .activity(activity)
@@ -79,7 +79,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 
         for (Long contentStyleId : activityCreateReq.getContentStyleIds()) {
             ContentStyle contentStyle = contentStyleRepository.findById(contentStyleId)
-                    .orElseThrow(() -> new CustomException(ActivityErrorCode.CONTENTSTYLE_NOT_FOUND_404));
+                    .orElseThrow(() -> new CustomException(ActivityErrorResponseCode.CONTENTSTYLE_NOT_FOUND_404));
 
             ActivityContentStyle acs = ActivityContentStyle.builder()
                     .activity(activity)
@@ -91,7 +91,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 
         for (Long preferTopicId : activityCreateReq.getPreferTopicIds()) {
             PreferTopic preferTopic = preferTopicRepository.findById(preferTopicId)
-                    .orElseThrow(() -> new CustomException(ActivityErrorCode.PREPERTOPIC_NOT_FOUND_404));
+                    .orElseThrow(() -> new CustomException(ActivityErrorResponseCode.PREPERTOPIC_NOT_FOUND_404));
 
             ActivityPreferTopic apt = ActivityPreferTopic.builder()
                     .activity(activity)

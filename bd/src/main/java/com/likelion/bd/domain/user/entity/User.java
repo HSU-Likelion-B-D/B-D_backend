@@ -38,4 +38,16 @@ public class User extends BaseEntity {
     @Column(name = "ROLE", nullable = false)
     private UserRoleType role;
 
+    // -------------------------------------------------------------------------------------------------------
+
+    // 회원 정보 수정을 위한 메서드
+    public void updateProfile(String newNickname, String newImageUrl, String newIntroduction) {
+        if (newNickname != null) {
+            this.nickname = newNickname;
+        }
+
+        // 프로필 사진이랑 자기 소개글은 null 가능
+        this.profileImage = newImageUrl;
+        this.introduction = newIntroduction;
+    }
 }
