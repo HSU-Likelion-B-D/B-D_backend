@@ -10,7 +10,6 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class UserSignupReq {
 
@@ -26,13 +25,6 @@ public class UserSignupReq {
             regexp = "^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{4,12}$",
             message = "비밀번호는 영문자와 특수문자를 포함하여 4~12자여야 합니다.")
     private String password;
-
-    @NotBlank(message = "닉네임은 필수 입력 값 입니다.")
-    private String nickname;
-
-    private MultipartFile profileImage;
-
-    private String introduction;
 
     @NotBlank(message = "역할은 필수 입력 값입니다.")
     @Pattern(regexp = "^(business|influencer)$", message = "역할은 'business' 또는 'influencer' 중 하나여야 합니다.")
