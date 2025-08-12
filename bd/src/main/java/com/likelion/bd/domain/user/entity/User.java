@@ -25,7 +25,7 @@ public class User extends BaseEntity {
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @Column(name = "NICKNAME", nullable = false, unique = true)
+    @Column(name = "NICKNAME", unique = true)
     private String nickname;
 
     @Column(name = "PROFILE_IMAGE")

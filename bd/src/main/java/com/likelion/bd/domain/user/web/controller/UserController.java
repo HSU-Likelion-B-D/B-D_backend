@@ -45,7 +45,7 @@ public class UserController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse<?>> signup(
-            @ModelAttribute @Valid UserSignupReq userSignupReq
+            @RequestBody @Valid UserSignupReq userSignupReq
     ) {
         // 서비스
         UserSignupRes userSignupRes = userService.signup(userSignupReq);
@@ -54,6 +54,20 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(SuccessResponse.ok(userSignupRes));
+    }
+
+    // 프로필 생성
+    @PostMapping("/profile")
+    public ResponseEntity<SuccessResponse<?>> profile(
+            @ModelAttribute @Valid ProfileCreateReq profileCreateReq
+    ) {
+        // 서비스
+        userService.profileCreate(profileCreateReq);
+
+        // 반환
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(SuccessResponse.emptyCustom("프로필 설정에 성공하셨습니다."));
     }
 
     // 로그인
