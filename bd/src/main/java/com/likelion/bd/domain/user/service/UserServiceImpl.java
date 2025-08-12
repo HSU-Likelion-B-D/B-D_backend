@@ -46,19 +46,10 @@ public class UserServiceImpl implements UserService {
 
         UserRoleType role = UserRoleType.valueOf(userSignupReq.getRole().toUpperCase());
 
-        // s3에 저장된 이미지 url 받아오기
-        String imageUrl = null;
-        if (userSignupReq.getProfileImage() != null && !userSignupReq.getProfileImage().isEmpty()) {
-            imageUrl = s3Service.uploadImageToS3(userSignupReq.getProfileImage());
-        }
-
         User user = User.builder()
                 .name(userSignupReq.getName())
                 .email(userSignupReq.getEmail())
                 .password(bCryptPasswordEncoder.encode(userSignupReq.getPassword()))
-                .nickname(userSignupReq.getNickname())
-                .profileImage(imageUrl)
-                .introduction(userSignupReq.getIntroduction())
                 .role(role)
                 .build();
 
@@ -69,6 +60,27 @@ public class UserServiceImpl implements UserService {
         return new UserSignupRes(
                 saveUser.getUserId(),
                 saveUser.getRole()
+        );
+    }
+
+    // 프로필 생성
+    @Override
+    @Transactional
+    public void profileCreate(ProfileCreateReq profileCreateReq) {
+
+        User user = userRepository.findByUserId(profileCreateReq.getUserId())
+                .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
+
+        // s3에 저장된 이미지 url 받아오기
+        String imageUrl = null;
+        if (profileCreateReq.getProfileImage() != null && !profileCreateReq.getProfileImage().isEmpty()) {
+            imageUrl = s3Service.uploadImageToS3(profileCreateReq.getProfileImage());
+        }
+
+        user.updateProfile(
+                profileCreateReq.getNickname(),
+                imageUrl,
+                profileCreateReq.getIntroduction()
         );
     }
 
