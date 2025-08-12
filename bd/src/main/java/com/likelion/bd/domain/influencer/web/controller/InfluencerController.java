@@ -3,6 +3,7 @@ package com.likelion.bd.domain.influencer.web.controller;
 import com.likelion.bd.domain.influencer.service.InfluencerService;
 import com.likelion.bd.domain.influencer.web.dto.ActivityCreateReq;
 import com.likelion.bd.domain.influencer.web.dto.ActivityCreateRes;
+import com.likelion.bd.domain.influencer.web.dto.InfluencerMyPageRes;
 import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.SuccessResponse;
 import jakarta.validation.Valid;
@@ -30,5 +31,17 @@ public class InfluencerController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(SuccessResponse.ok(activityCreateRes));
+    }
+
+    @GetMapping("/mypage")
+    public  ResponseEntity<SuccessResponse<?>> myPage(
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+
+        InfluencerMyPageRes influencerMyPageRes = influencerService.myPage(userPrincipal.getId());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.ok(influencerMyPageRes));
     }
 }
