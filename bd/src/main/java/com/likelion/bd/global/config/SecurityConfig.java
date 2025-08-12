@@ -51,7 +51,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/user/signup", "/user/signin",
+                        .requestMatchers("/user/signup", "/user/profile", "/user/signin",
                                 "/user/check-email", "/user/check-nickname").permitAll()
                         .requestMatchers("/influencer/create", "/influencer/mypage").hasRole("INFLUENCER")
                         .requestMatchers("/influencer/update").authenticated()
