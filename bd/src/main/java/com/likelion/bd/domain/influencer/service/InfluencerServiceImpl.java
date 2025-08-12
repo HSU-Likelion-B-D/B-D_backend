@@ -107,6 +107,8 @@ public class InfluencerServiceImpl implements InfluencerService {
         Influencer influencer = Influencer.builder()
                 .user(user)
                 .activity(activity)
+                .totalScore(0L)
+                .reviewCount(0L)
                 .build();
         influencerRepository.save(influencer);
 
@@ -140,11 +142,17 @@ public class InfluencerServiceImpl implements InfluencerService {
                 .map(apt -> apt.getPreferTopic().getName())
                 .toList();
 
+        double avgScore = 0.00;
+        if (influencer.getReviewCount() != 0) {
+            avgScore = (double) influencer.getTotalScore() / influencer.getReviewCount();
+        }
+
         return new InfluencerMyPageRes(
                 user.getProfileImage(),
                 activity.getActivityName(),
                 user.getName(),
                 activity.getFollowerCountRange().name(),
+                avgScore,
                 activity.getSnsUrl(),
                 activity.getMinAmount(),
                 platformDto,
