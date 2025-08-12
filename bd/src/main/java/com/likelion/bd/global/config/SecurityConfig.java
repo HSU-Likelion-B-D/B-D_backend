@@ -53,7 +53,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/user/signup", "/user/signin",
                                 "/user/check-email", "/user/check-nickname").permitAll()
-                        .requestMatchers("/influencer/create").hasRole("INFLUENCER")
+                        .requestMatchers("/influencer/create", "/influencer/mypage").hasRole("INFLUENCER")
                         .requestMatchers("/influencer/update").authenticated()
 //                        .requestMatchers("/api/").permitAll()
 //                        .requestMatchers("/**").permitAll()

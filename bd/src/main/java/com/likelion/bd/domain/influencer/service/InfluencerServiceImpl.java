@@ -4,6 +4,7 @@ import com.likelion.bd.domain.influencer.entity.*;
 import com.likelion.bd.domain.influencer.repository.*;
 import com.likelion.bd.domain.influencer.web.dto.ActivityCreateReq;
 import com.likelion.bd.domain.influencer.web.dto.ActivityCreateRes;
+import com.likelion.bd.domain.influencer.web.dto.InfluencerMyPageRes;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
@@ -12,6 +13,8 @@ import com.likelion.bd.global.response.code.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -111,6 +114,43 @@ public class InfluencerServiceImpl implements InfluencerService {
 
         return new ActivityCreateRes(
                 influencer.getInfluencerId()
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public InfluencerMyPageRes myPage(Long userId) {
+
+        Influencer influencer = influencerRepository.findByUserUserId(userId)
+                .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
+
+        User user = influencer.getUser();
+        Activity activity = influencer.getActivity();
+
+        List<String> platformDto = activity.getActivityPlatformList().stream()
+                .map(ap -> ap.getPlatform().getName())
+                .toList();
+        List<String> contentTopicDto = activity.getActivityContentTopicList().stream()
+                .map(act -> act.getContentTopic().getName())
+                .toList();
+        List<String> contentStyleDto = activity.getActivityContentStyleList().stream()
+                .map(acs -> acs.getContentStyle().getName())
+                .toList();
+        List<String> preferTopicDto = activity.getActivityPreferTopicList().stream()
+                .map(apt -> apt.getPreferTopic().getName())
+                .toList();
+
+        return new InfluencerMyPageRes(
+                user.getProfileImage(),
+                activity.getActivityName(),
+                user.getName(),
+                activity.getFollowerCountRange().name(),
+                activity.getSnsUrl(),
+                activity.getMinAmount(),
+                platformDto,
+                contentTopicDto,
+                contentStyleDto,
+                preferTopicDto
         );
     }
 }
