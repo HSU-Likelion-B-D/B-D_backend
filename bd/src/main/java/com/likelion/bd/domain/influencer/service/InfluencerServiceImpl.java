@@ -9,6 +9,7 @@ import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.response.code.Influencer.ActivityErrorResponseCode;
+import com.likelion.bd.global.response.code.Influencer.InfluencerErrorResponseCode;
 import com.likelion.bd.global.response.code.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,18 +32,22 @@ public class InfluencerServiceImpl implements InfluencerService {
     @Override
     @Transactional
     public ActivityCreateRes createActivity(
-            ActivityCreateReq activityCreateReq,
-            Long userId
+            ActivityCreateReq activityCreateReq
     ) {
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(activityCreateReq.getUserId())
                 .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
+
+        influencerRepository.findByUserUserId(activityCreateReq.getUserId())
+                .ifPresent(influencer -> {
+                    throw new CustomException(InfluencerErrorResponseCode.INFLUENCER_DUPLICATE_409); // 예시 에러
+                });
 
         // -------------------------------------------------------------------------------------------------------
 
         Activity activity = Activity.builder() // 유효성 검사를 다 통과하고 넘어왔다는 가정
                 .activityName(activityCreateReq.getActivityName())
                 .snsUrl(activityCreateReq.getSnsUrl())
-                .followerCountRange(FollowerCountRange.fromValue(activityCreateReq.getFollowerCountRange()))
+                .followerCount(activityCreateReq.getFollowerCount())
                 .uploadFrequency(UploadFrequency.fromValue(activityCreateReq.getUploadFrequency()))
                 .bankName(activityCreateReq.getBankName())
                 .accountNumber(activityCreateReq.getAccountNumber())
@@ -142,6 +147,9 @@ public class InfluencerServiceImpl implements InfluencerService {
                 .map(apt -> apt.getPreferTopic().getName())
                 .toList();
 
+
+        String formattedFollowers = activity.formatFollowers();
+
         double avgScore = 0.00;
         if (influencer.getReviewCount() != 0) {
             avgScore = (double) influencer.getTotalScore() / influencer.getReviewCount();
@@ -151,8 +159,9 @@ public class InfluencerServiceImpl implements InfluencerService {
                 user.getProfileImage(),
                 activity.getActivityName(),
                 user.getName(),
-                activity.getFollowerCountRange().name(),
+                formattedFollowers,
                 avgScore,
+                influencer.getInfluencerId(),
                 activity.getSnsUrl(),
                 activity.getMinAmount(),
                 platformDto,
