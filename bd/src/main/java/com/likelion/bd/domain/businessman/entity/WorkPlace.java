@@ -40,13 +40,11 @@ public class WorkPlace {
     @Column(name = "ONLINE_STORE", nullable = false)
     private Boolean isOnline; //사업장 온라인스토어 유무
 
-//    @OneToOne
-//    @JoinColumn(name = "businessmanId")
-//    private BusinessMan businessman; //자영업자 외래키
+    @Column(name = "MIN_BUDGET", nullable = false)
+    private Long minBudget;
 
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "businessman_id", nullable = false)
-//    private BusinessMan businessman;
+    @Column(name = "MAX_BUDGET", nullable = false)
+    private Long maxBudget;
 
     @Builder.Default
     @OneToMany(mappedBy = "workPlace", cascade = CascadeType.ALL, orphanRemoval = true)
