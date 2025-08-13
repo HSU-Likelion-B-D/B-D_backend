@@ -2,29 +2,27 @@ package com.likelion.bd.domain.businessman.service;
 
 import com.likelion.bd.domain.businessman.entity.*;
 import com.likelion.bd.domain.businessman.repository.*;
-import com.likelion.bd.domain.businessman.web.dto.WorkPlaceCreateReq;
-import com.likelion.bd.domain.businessman.web.dto.WorkPlaceCreateRes;
-import com.likelion.bd.domain.businessman.web.dto.WorkPlaceUpdateReq;
-import com.likelion.bd.domain.businessman.web.dto.WorkPlaceUpdateRes;
+import com.likelion.bd.domain.businessman.web.dto.*;
 import com.likelion.bd.domain.user.entity.User;
-import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponseCode;
-import com.likelion.bd.global.response.code.ErrorResponseCode;
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import com.likelion.bd.global.response.code.businessMan.WorkPlaceErrorReponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class WorkPlaceServiceImpl implements WorkPlaceService {
+public class BusinessManServiceImpl implements BusinessManService {
 
     private final UserRepository userRepository;
     private final WorkPlaceRepository workPlaceRepository;
@@ -191,6 +189,77 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
 
         return new WorkPlaceUpdateRes(
                 businessMan.getBusinessManId()
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BusinessMyPageRes mypage(UserPrincipal userPrincipal) {
+
+        BusinessMan businessMan = businessManRepository.findByUserUserId(userPrincipal.getId())
+                .orElseThrow( ()-> new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
+
+        User user = businessMan.getUser();
+
+        WorkPlace workPlace = businessMan.getWorkPlace();
+
+        List<String> categoryList = workPlace.getCategoryList().stream()
+                .map(category -> category.getCategory().getName())
+                .toList();
+
+        List<String> moodList = workPlace.getMoodList().stream()
+                .map(mood -> mood.getMood().getName())
+                .toList();
+
+        List<String> promotionList = workPlace.getPromotionList().stream()
+                .map(promotion -> promotion.getPromotion().getName())
+                .toList();
+
+        //소수점 2자리까지 처리한다.
+        BigDecimal avgScore = BigDecimal.ZERO;
+        if (businessMan.getReviewCount() > 0) {
+            avgScore = BigDecimal.valueOf(businessMan.getTotalScore())
+                    .divide(BigDecimal.valueOf(businessMan.getReviewCount()), 2, RoundingMode.HALF_UP);
+        }
+        String avgText = String.format("%.2f", avgScore);
+
+        return new BusinessMyPageRes(
+                user.getNickname(),
+                workPlace.getName(),
+                workPlace.getAddress(),
+                workPlace.getDetailAddress(),
+                user.getIntroduction(),
+                //LocalTime에서 String으로 변환하면 자동으로 HH:mm형태로 파싱된다.
+                workPlace.getOpenTime().toString(),
+                workPlace.getCloseTime().toString(),
+                avgText,
+                categoryList,
+                moodList,
+                promotionList
+        );
+    }
+
+    @Override
+    public BusinessHomeRes home(UserPrincipal userPrincipal) {
+        BusinessMan businessMan = businessManRepository.findByUserUserId(userPrincipal.getId())
+                .orElseThrow(()->new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
+
+        User user = businessMan.getUser();
+
+        WorkPlace workPlace = businessMan.getWorkPlace();
+
+        //소수점 2자리까지 처리한다.
+        BigDecimal avgScore = BigDecimal.ZERO;
+        if (businessMan.getReviewCount() > 0) {
+            avgScore = BigDecimal.valueOf(businessMan.getTotalScore())
+                    .divide(BigDecimal.valueOf(businessMan.getReviewCount()), 2, RoundingMode.HALF_UP);
+        }
+        String avgText = String.format("%.2f", avgScore);
+
+        return new BusinessHomeRes(
+                user.getNickname(),
+                workPlace.getName(),
+                avgText
         );
     }
 }
