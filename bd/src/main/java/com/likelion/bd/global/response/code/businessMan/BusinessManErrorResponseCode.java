@@ -1,5 +1,6 @@
-package com.likelion.bd.global.response.code;
+package com.likelion.bd.global.response.code.businessMan;
 
+import com.likelion.bd.global.response.code.BaseResponseCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

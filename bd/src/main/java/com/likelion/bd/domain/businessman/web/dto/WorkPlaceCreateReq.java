@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @Builder
 public class WorkPlaceCreateReq {
+    Long userId; //user의 기본키 ID
     String name; //사업장 이름
     String address; //사업장 주소
     String detailAddress; //사업장 상세주소

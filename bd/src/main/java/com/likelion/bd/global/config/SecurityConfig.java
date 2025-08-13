@@ -4,6 +4,7 @@ import com.likelion.bd.global.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -58,7 +59,9 @@ public class SecurityConfig {
                         .requestMatchers("/influencer/update").authenticated()
 //                        .requestMatchers("/api/").permitAll()
 //                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()  // 그 외 요청은 전부 토큰 필요
+                                .requestMatchers(HttpMethod.POST,"/api/businessman/workplace").permitAll()
+                                .requestMatchers(HttpMethod.PUT,"/api/businessman/workplace").hasRole("BUSINESS")
+                                .anyRequest().authenticated()  // 그 외 요청은 전부 토큰 필요
                 );
 
         // JWTFilter 등록
