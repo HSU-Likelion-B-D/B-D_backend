@@ -161,7 +161,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 user.getName(),
                 formattedFollowers,
                 avgScore,
-                influencer.getInfluencerId(),
+                influencer.getReviewCount(),
                 activity.getSnsUrl(),
                 activity.getMinAmount(),
                 platformDto,
