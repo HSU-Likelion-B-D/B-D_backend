@@ -22,11 +22,10 @@ public class InfluencerController {
 
     @PostMapping("/create")
     public ResponseEntity<SuccessResponse<?>> createActivity(
-            @RequestBody @Valid ActivityCreateReq activityCreateReq,
-            @AuthenticationPrincipal UserPrincipal userPrincipal
+            @RequestBody @Valid ActivityCreateReq activityCreateReq
     ) {
 
-        ActivityCreateRes activityCreateRes = influencerService.createActivity(activityCreateReq, userPrincipal.getId());
+        ActivityCreateRes activityCreateRes = influencerService.createActivity(activityCreateReq);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
