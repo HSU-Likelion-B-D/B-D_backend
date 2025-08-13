@@ -17,6 +17,8 @@ public class WorkPlaceCreateReq {
     String openTime; //영업시작시간
     String closeTime; //영업마감시간
     Boolean isOnline; //온라인스토어 유무
+    Long minBudget; //홍보 최저예산
+    Long maxBudget; //홍보 최대예산
     List<Long> categoryIds; //사업장 카테고리
     List<Long> moodIds; //사업장 분위기
     List<Long> promotionIds; //사업장 홍보방식
