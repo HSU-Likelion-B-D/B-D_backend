@@ -59,12 +59,14 @@ public class WorkPlace {
     private List<WorkPlacePromotion> promotionList = new ArrayList<>();
 
     public void updateBasicInfo(String name, String address, String detailAddress,
-                                LocalTime openTime, LocalTime closeTime, Boolean isOnline){
+                                LocalTime openTime, LocalTime closeTime, Long minBudget, Long maxBudget,Boolean isOnline){
         this.name = name;
         this.address = address;
         this.detailAddress = detailAddress;
         this.openTime = openTime;
         this.closeTime = closeTime;
+        this.minBudget = minBudget;
+        this.maxBudget = maxBudget;
         this.isOnline = isOnline;
     }
 }

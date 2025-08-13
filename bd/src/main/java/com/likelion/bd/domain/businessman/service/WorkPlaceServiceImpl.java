@@ -68,6 +68,8 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
                 .name(workPlaceCreateReq.getName())
                 .address(workPlaceCreateReq.getAddress())
                 .detailAddress(workPlaceCreateReq.getDetailAddress())
+                .minBudget(workPlaceCreateReq.getMinBudget())
+                .maxBudget(workPlaceCreateReq.getMaxBudget())
                 .openTime(openTime)
                 .closeTime(closeTime)
                 .isOnline(workPlaceCreateReq.getIsOnline())
@@ -150,6 +152,8 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
                 workPlaceUpdateReq.getDetailAddress(),
                 openTime,
                 closeTime,
+                workPlaceUpdateReq.getMinBudget(),
+                workPlaceUpdateReq.getMaxBudget(),
                 workPlaceUpdateReq.getIsOnline()
         );
 
