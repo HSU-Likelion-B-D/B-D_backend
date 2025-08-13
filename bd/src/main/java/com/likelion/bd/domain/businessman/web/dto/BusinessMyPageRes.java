@@ -10,8 +10,9 @@ public record BusinessMyPageRes(
         String introduce,
         String openTime,
         String closeTime,
-        List<String> promotionList,
+        String avgScore,
         List<String> categoryList,
-        List<String> moodList
+        List<String> moodList,
+        List<String> promotionList
 ) {
 }
