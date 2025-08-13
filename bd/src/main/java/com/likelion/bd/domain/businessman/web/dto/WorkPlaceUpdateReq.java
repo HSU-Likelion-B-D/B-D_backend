@@ -10,7 +10,6 @@ import java.util.List;
 @Setter
 @Builder
 public class WorkPlaceUpdateReq {
-    private Long userId; //수정 요청자
     private String name;
     private String address;
     private String detailAddress;
