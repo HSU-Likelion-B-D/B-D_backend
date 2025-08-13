@@ -6,7 +6,7 @@ import com.likelion.bd.domain.influencer.web.dto.InfluencerMyPageRes;
 
 public interface InfluencerService {
 
-    ActivityCreateRes createActivity(ActivityCreateReq activityCreateReq, Long userId);
+    ActivityCreateRes createActivity(ActivityCreateReq activityCreateReq);
 
     InfluencerMyPageRes myPage(Long userId);
 }

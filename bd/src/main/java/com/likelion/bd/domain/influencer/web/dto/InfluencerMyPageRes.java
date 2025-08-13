@@ -6,8 +6,9 @@ public record InfluencerMyPageRes(
         String imgUrl,                  // 사진
         String activityName,            // 활동명
         String nickName,                // 닉네임
-        String follower,                // 팔로워 수
+        String follower,                  // 팔로워 수
         Double avgScore,                // 평점
+        Long reviewCount,               // 평가 받은 횟수
         String snsUrl,                  // SNS 링크
         Long minAmount,                 // 희망하는 최소 금액
         List<String> platforms,        // 플랫폼 목록

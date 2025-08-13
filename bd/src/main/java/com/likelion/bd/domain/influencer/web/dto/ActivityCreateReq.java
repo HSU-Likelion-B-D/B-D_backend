@@ -13,6 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ActivityCreateReq {
 
+    @NotNull(message = "사용자 ID는 필수 입력 값입니다.")
+    private Long userId;
+
     @NotBlank(message = "활동명은 필수 입력 항목입니다.")
     private String activityName; // 활동명
 
@@ -20,10 +23,8 @@ public class ActivityCreateReq {
     @URL(message = "유효한 URL 형식이 아닙니다.")
     private String snsUrl; // sns 주소
 
-    @NotNull(message = "팔로워 수 범위를 선택해주세요.")
-    @Min(value = 1, message = "팔로워 수 범위는 1에서 5 사이의 값이어야 합니다.")
-    @Max(value = 5, message = "팔로워 수 범위는 1에서 5 사이의 값이어야 합니다.")
-    int followerCountRange; // 팔로워 수 범위
+    @NotNull(message = "팔로워 수는 필수 입력 값입니다.")
+    Long followerCount;
 
     @NotNull(message = "주 업로드 횟수를 선택해주세요.")
     @Min(value = 1, message = "주 업로드 횟수는 1에서 5 사이의 값이어야 합니다.")
