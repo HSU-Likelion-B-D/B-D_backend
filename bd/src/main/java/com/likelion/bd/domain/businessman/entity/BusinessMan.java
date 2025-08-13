@@ -27,5 +27,11 @@ public class BusinessMan {
     @JoinColumn(name = "workplaceId")
     private WorkPlace workPlace;
 
+    @Column(name = "total_score")
+    private Long totalScore;
+
+    @Column(name = "review_count")
+    private Long reviewCount;
+
 
 }
