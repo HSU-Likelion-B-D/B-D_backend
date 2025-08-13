@@ -2,11 +2,13 @@ package com.likelion.bd.domain.user.web.controller;
 
 import com.likelion.bd.domain.user.service.UserService;
 import com.likelion.bd.domain.user.web.dto.*;
+import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,7 +45,7 @@ public class UserController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse<?>> signup(
-            @ModelAttribute @Valid UserSignupReq userSignupReq
+            @RequestBody @Valid UserSignupReq userSignupReq
     ) {
         // 서비스
         UserSignupRes userSignupRes = userService.signup(userSignupReq);
@@ -52,6 +54,20 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(SuccessResponse.ok(userSignupRes));
+    }
+
+    // 프로필 생성
+    @PostMapping("/profile")
+    public ResponseEntity<SuccessResponse<?>> profile(
+            @ModelAttribute @Valid ProfileCreateReq profileCreateReq
+    ) {
+        // 서비스
+        userService.profileCreate(profileCreateReq);
+
+        // 반환
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(SuccessResponse.emptyCustom("프로필 설정에 성공하셨습니다."));
     }
 
     // 로그인
@@ -66,5 +82,19 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(SuccessResponse.ok(userSigninRes));
+    }
+
+    // 회원 정보 수정
+    @PutMapping("/update")
+    public ResponseEntity<SuccessResponse<?>> update(
+            @ModelAttribute @Valid UserUpdateReq userUpdateReq,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+
+        userService.updateUser(userUpdateReq, userPrincipal.getId());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.emptyCustom("회원 정보 수정에 성공하셨습니다."));
     }
 }

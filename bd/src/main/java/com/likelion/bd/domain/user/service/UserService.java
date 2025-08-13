@@ -13,6 +13,13 @@ public interface UserService {
     // 회원 가입
     UserSignupRes signup(UserSignupReq userSignupReq);
 
+    // 프로필 생성
+    void profileCreate(ProfileCreateReq profileCreateReq);
+
     // 로그인
     UserSigninRes signin(UserSigninReq userSigninReq);
+
+    // 회원 정보 수정
+    void updateUser(UserUpdateReq userUpdateReq, Long userId);
+
 }

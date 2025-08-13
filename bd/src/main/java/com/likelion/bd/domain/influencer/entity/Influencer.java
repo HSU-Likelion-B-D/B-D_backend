@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -31,4 +32,10 @@ public class Influencer {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ACTIVITY_ID", unique = true, nullable = false)
     private Activity activity;
+
+    @Column(name = "total_score")
+    private Long totalScore;
+
+    @Column(name = "review_count")
+    private Long reviewCount;
 }

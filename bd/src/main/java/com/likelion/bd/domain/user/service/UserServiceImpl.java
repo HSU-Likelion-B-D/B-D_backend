@@ -2,14 +2,13 @@ package com.likelion.bd.domain.user.service;
 
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.entity.UserRoleType;
-import com.likelion.bd.domain.user.exception.DuplicateEmailException;
-import com.likelion.bd.domain.user.exception.DuplicateNicknameException;
-import com.likelion.bd.domain.user.exception.InvalidPasswordException;
-import com.likelion.bd.domain.user.exception.NotFoundEmailException;
+import com.likelion.bd.domain.user.exception.*;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.domain.user.web.dto.*;
+import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.external.s3.S3Service;
 import com.likelion.bd.global.jwt.JwtTokenProvider;
+import com.likelion.bd.global.response.code.UserErrorResponseCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -47,19 +46,10 @@ public class UserServiceImpl implements UserService {
 
         UserRoleType role = UserRoleType.valueOf(userSignupReq.getRole().toUpperCase());
 
-        // s3에 저장된 이미지 url 받아오기
-        String imageUrl = null;
-        if (userSignupReq.getProfileImage() != null && !userSignupReq.getProfileImage().isEmpty()) {
-            imageUrl = s3Service.uploadImageToS3(userSignupReq.getProfileImage());
-        }
-
         User user = User.builder()
                 .name(userSignupReq.getName())
                 .email(userSignupReq.getEmail())
                 .password(bCryptPasswordEncoder.encode(userSignupReq.getPassword()))
-                .nickname(userSignupReq.getNickname())
-                .profileImage(imageUrl)
-                .introduction(userSignupReq.getIntroduction())
                 .role(role)
                 .build();
 
@@ -70,6 +60,27 @@ public class UserServiceImpl implements UserService {
         return new UserSignupRes(
                 saveUser.getUserId(),
                 saveUser.getRole()
+        );
+    }
+
+    // 프로필 생성
+    @Override
+    @Transactional
+    public void profileCreate(ProfileCreateReq profileCreateReq) {
+
+        User user = userRepository.findByUserId(profileCreateReq.getUserId())
+                .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
+
+        // s3에 저장된 이미지 url 받아오기
+        String imageUrl = null;
+        if (profileCreateReq.getProfileImage() != null && !profileCreateReq.getProfileImage().isEmpty()) {
+            imageUrl = s3Service.uploadImageToS3(profileCreateReq.getProfileImage());
+        }
+
+        user.updateProfile(
+                profileCreateReq.getNickname(),
+                imageUrl,
+                profileCreateReq.getIntroduction()
         );
     }
 
@@ -90,5 +101,41 @@ public class UserServiceImpl implements UserService {
         String token = jwtTokenProvider.createToken(user);
 
         return new UserSigninRes(token);
+    }
+
+    // 회원 정보 수정
+    @Override
+    @Transactional
+    public void updateUser(UserUpdateReq userUpdateReq, Long userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
+
+        String newNickname = null;
+        String newImageUrl = user.getProfileImage();
+        String newIntroduction = user.getIntroduction();
+
+        if (userUpdateReq.getNickname() != null && !userUpdateReq.getNickname().isEmpty()) {
+            newNickname = userUpdateReq.getNickname();
+        }
+
+        if (userUpdateReq.isImageDelete()) {
+            if (user.getProfileImage() != null) {
+                s3Service.deleteImageFromS3(user.getProfileImage());
+            }
+            newImageUrl = null;
+        }
+        if (userUpdateReq.getProfileImage() != null && !userUpdateReq.getProfileImage().isEmpty()) {
+            s3Service.deleteImageFromS3(user.getProfileImage());
+            newImageUrl = s3Service.uploadImageToS3(userUpdateReq.getProfileImage());
+        }
+
+        if (userUpdateReq.isIntroductionDelete()) {
+            newIntroduction = null;
+        }
+        if (userUpdateReq.getIntroduction() != null && !userUpdateReq.getIntroduction().isEmpty()) {
+            newIntroduction = userUpdateReq.getIntroduction();
+        }
+
+        user.updateProfile(newNickname, newImageUrl, newIntroduction);
     }
 }

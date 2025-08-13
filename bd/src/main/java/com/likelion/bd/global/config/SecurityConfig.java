@@ -52,9 +52,11 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
 
-                                .requestMatchers("/user/signup", "/user/signin",
-                                        "/user/check-email", "/user/check-nickname").permitAll()
-                                .requestMatchers("/influencer/create").hasRole("INFLUENCER")
+                        .requestMatchers("/user/signup", "/user/profile", "/user/signin",
+                                "/user/check-email", "/user/check-nickname",
+                                "/influencer/create").permitAll()
+                        .requestMatchers("/influencer/mypage").hasRole("INFLUENCER")
+                        .requestMatchers("/influencer/update").authenticated()
 //                        .requestMatchers("/api/").permitAll()
 //                        .requestMatchers("/**").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/businessman/workplace").permitAll()
