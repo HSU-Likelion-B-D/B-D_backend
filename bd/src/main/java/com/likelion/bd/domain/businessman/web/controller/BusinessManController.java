@@ -47,6 +47,9 @@ public class BusinessManController {
 
     @GetMapping("/home")
     public ResponseEntity<SuccessResponse<?>> home(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        BusinessHomeRes businessHome = businessManService.home(userPrincipal);
+        BusinessHomeRes businessHomeRes = businessManService.home(userPrincipal);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.ok(businessHomeRes));
     }
 }
