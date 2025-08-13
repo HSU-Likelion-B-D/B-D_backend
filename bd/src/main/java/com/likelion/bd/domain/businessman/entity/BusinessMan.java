@@ -19,11 +19,13 @@ public class BusinessMan {
     @Column(name = "BUSINESSMAN_ID")
     private Long businessManId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userId")
     private User user;
 
-//    WorkPlace가 businessman_id FK를 가짐(owning side)
-//    @OneToMany(mappedBy = "businessman", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<WorkPlace> workPlaces = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "workplaceId")
+    private WorkPlace workPlace;
+
+
 }
