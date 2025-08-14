@@ -9,6 +9,7 @@ import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.external.s3.S3Service;
 import com.likelion.bd.global.jwt.JwtTokenProvider;
 import com.likelion.bd.global.mail.MailService;
+import com.likelion.bd.global.response.code.ErrorResponseCode;
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -146,8 +147,17 @@ public class UserServiceImpl implements UserService {
     public void sendCodeToEmail(CheckEmailReq checkEmailReq) {
         String email = checkEmailReq.getEmail();
 
-        // 이메일 중복 여부 확인
-        checkEmail(checkEmailReq);
+        if (checkEmailReq.getPurpose().equals("SIGNUP")) {
+            // 회원가입할 때는 "신규" 메일이여야함
+            checkEmail(checkEmailReq);
+        } else if (checkEmailReq.getPurpose().equals("PW_CHANGE")) {
+            // 비밀번호 변경때는 "가입된" 메일이여함.
+            if (!userRepository.existsByEmail(checkEmailReq.getEmail())) {
+                throw new NotFoundEmailException();
+            }
+        } else {
+            throw new CustomException(ErrorResponseCode.BAD_REQUEST_ERROR);
+        }
 
         mailService.sendAuthCode(email);
     }
@@ -159,5 +169,15 @@ public class UserServiceImpl implements UserService {
         String code = checkEmailReq.getCode();
 
         mailService.verifyCode(email, code);
+    }
+
+    // 비밀번호 변경
+    @Override
+    @Transactional
+    public void changePassword(UserSigninReq userSigninReq) {
+        User user = userRepository.findByEmail(userSigninReq.getEmail())
+                .orElseThrow(NotFoundEmailException::new);
+
+        user.changePassword(bCryptPasswordEncoder.encode(userSigninReq.getPassword()));
     }
 }

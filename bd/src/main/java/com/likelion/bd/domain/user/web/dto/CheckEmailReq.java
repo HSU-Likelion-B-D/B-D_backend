@@ -2,6 +2,7 @@ package com.likelion.bd.domain.user.web.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,4 +15,6 @@ public class CheckEmailReq {
     private String email;
 
     private String code;
+
+    private String purpose;
 }

@@ -54,7 +54,8 @@ public class SecurityConfig {
 
                         .requestMatchers("/user/signup", "/user/profile", "/user/signin",
                                 "/user/check-email", "/user/check-nickname",
-                                "/influencer/create", "/user/sendcode", "/user/verifycode").permitAll()
+                                "/influencer/create", "/user/sendcode", "/user/verifycode",
+                                "user/pwchange").permitAll()
                         .requestMatchers("/influencer/mypage").hasRole("INFLUENCER")
                         .requestMatchers("/influencer/update").authenticated()
                         .requestMatchers(HttpMethod.POST,"/api/businessman/workplaces").permitAll()
