@@ -8,7 +8,8 @@ import com.likelion.bd.domain.user.web.dto.*;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.external.s3.S3Service;
 import com.likelion.bd.global.jwt.JwtTokenProvider;
-import com.likelion.bd.global.response.code.UserErrorResponseCode;
+import com.likelion.bd.global.mail.MailService;
+import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +23,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final S3Service s3Service;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MailService mailService;
 
     // 이메일 중복 검사
     @Override
@@ -137,5 +139,25 @@ public class UserServiceImpl implements UserService {
         }
 
         user.updateProfile(newNickname, newImageUrl, newIntroduction);
+    }
+
+    // 이메일로 인증번호 전송
+    @Override
+    public void sendCodeToEmail(CheckEmailReq checkEmailReq) {
+        String email = checkEmailReq.getEmail();
+
+        // 이메일 중복 여부 확인
+        checkEmail(checkEmailReq);
+
+        mailService.sendAuthCode(email);
+    }
+
+    // 인증번호 검증
+    @Override
+    public void verifyCode(CheckEmailReq checkEmailReq) {
+        String email = checkEmailReq.getEmail();
+        String code = checkEmailReq.getCode();
+
+        mailService.verifyCode(email, code);
     }
 }
