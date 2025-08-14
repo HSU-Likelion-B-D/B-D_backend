@@ -59,8 +59,8 @@ public class SecurityConfig {
                         .requestMatchers("/influencer/update").authenticated()
 //                        .requestMatchers("/api/").permitAll()
 //                        .requestMatchers("/**").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/businessman/workplace").permitAll()
-                                .requestMatchers(HttpMethod.PUT,"/api/businessman/workplace").hasRole("BUSINESS")
+                                .requestMatchers(HttpMethod.POST,"/api/businessman/workplaces").permitAll()
+                                .requestMatchers(HttpMethod.PUT,"/api/businessman/workplaces").hasRole("BUSINESS")
                                 .anyRequest().authenticated()  // 그 외 요청은 전부 토큰 필요
                 );
 
