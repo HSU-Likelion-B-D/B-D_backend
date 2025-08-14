@@ -97,4 +97,30 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(SuccessResponse.emptyCustom("회원 정보 수정에 성공하셨습니다."));
     }
+
+    // 인증번호 전송
+    @PostMapping("/sendcode")
+    public ResponseEntity<SuccessResponse<?>> sendCode(
+            @RequestBody CheckEmailReq checkEmailReq
+    ) {
+
+        userService.sendCodeToEmail(checkEmailReq);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.emptyCustom("인증번호를 전송하였습니다."));
+    }
+
+    // 인증번호 검증
+    @PostMapping("/verifycode")
+    public ResponseEntity<SuccessResponse<?>> verifyCode(
+            @RequestBody CheckEmailReq checkEmailReq
+    ) {
+
+        userService.verifyCode(checkEmailReq);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.emptyCustom("인증번호가 일치합니다"));
+    }
 }

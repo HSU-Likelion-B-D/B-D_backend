@@ -54,14 +54,12 @@ public class SecurityConfig {
 
                         .requestMatchers("/user/signup", "/user/profile", "/user/signin",
                                 "/user/check-email", "/user/check-nickname",
-                                "/influencer/create").permitAll()
+                                "/influencer/create", "/user/sendcode", "/user/verifycode").permitAll()
                         .requestMatchers("/influencer/mypage").hasRole("INFLUENCER")
                         .requestMatchers("/influencer/update").authenticated()
-//                        .requestMatchers("/api/").permitAll()
-//                        .requestMatchers("/**").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/businessman/workplaces").permitAll()
-                                .requestMatchers(HttpMethod.PUT,"/api/businessman/workplaces").hasRole("BUSINESS")
-                                .anyRequest().authenticated()  // 그 외 요청은 전부 토큰 필요
+                        .requestMatchers(HttpMethod.POST,"/api/businessman/workplaces").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api/businessman/workplaces").hasRole("BUSINESS")
+                        .anyRequest().authenticated()  // 그 외 요청은 전부 토큰 필요
                 );
 
         // JWTFilter 등록

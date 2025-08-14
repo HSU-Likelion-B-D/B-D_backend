@@ -22,4 +22,9 @@ public interface UserService {
     // 회원 정보 수정
     void updateUser(UserUpdateReq userUpdateReq, Long userId);
 
+    // 이메일로 인증번호 전송
+    void sendCodeToEmail(CheckEmailReq checkEmailReq);
+
+    // 인증번호 검증
+    void verifyCode(CheckEmailReq checkEmailReq);
 }
