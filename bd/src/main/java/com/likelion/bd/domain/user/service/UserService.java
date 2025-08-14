@@ -27,4 +27,7 @@ public interface UserService {
 
     // 인증번호 검증
     void verifyCode(CheckEmailReq checkEmailReq);
+
+    // 비밀번호 변경
+    void changePassword(UserSigninReq userSigninReq);
 }
