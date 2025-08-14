@@ -39,18 +39,6 @@ public class BusinessManServiceImpl implements BusinessManService {
         User user = userRepository.findById(workPlaceCreateReq.getUserId())
                 .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
 
-        //사업자 엔티티를 찾기
-        //BusinessMan을 작성 시 User를 외래키로 관리하면 userId로 BusinessMan을 찾는 쿼리가 필요할 수 있음
-        //아래와 같다.
-//        BusinessMan businessMan = businessManRepository.findByUser(user)
-//                .orElseGet(() -> {
-//                    // 이 블록은 "없을 때만 실행"
-//                    BusinessMan bm = BusinessMan.builder().user(user).build();
-//                    return businessManRepository.save(bm);
-//                });
-// 여기서 bm은 무조건 존재 (기존 or 신규)
-
-
         //빌더패턴에선 직접적으로 try-catch를 사용하지 못하므로 사전에 openTime,closeTime을 검증해줘야한다.
         LocalTime openTime;
         LocalTime closeTime;
@@ -111,6 +99,7 @@ public class BusinessManServiceImpl implements BusinessManService {
                 .user(user)
                 .workPlace(workPlace)
                 .build();
+        businessManRepository.save(businessMan);
 
         return new WorkPlaceCreateRes(
                 businessMan.getBusinessManId()
@@ -126,7 +115,7 @@ public class BusinessManServiceImpl implements BusinessManService {
                 .orElseThrow( ()-> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
 
         //사업자 조회
-        BusinessMan businessMan = businessManRepository.findByUser(user)
+        BusinessMan businessMan = businessManRepository.findByUserUserId(userPrincipal.getId())
                 .orElseThrow(() -> new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
 
         //사업장 조회
