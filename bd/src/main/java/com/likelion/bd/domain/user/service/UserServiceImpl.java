@@ -8,7 +8,7 @@ import com.likelion.bd.domain.user.web.dto.*;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.external.s3.S3Service;
 import com.likelion.bd.global.jwt.JwtTokenProvider;
-import com.likelion.bd.global.response.code.UserErrorResponseCode;
+import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
