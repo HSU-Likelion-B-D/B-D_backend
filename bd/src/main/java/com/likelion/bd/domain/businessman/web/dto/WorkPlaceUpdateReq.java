@@ -15,6 +15,8 @@ public class WorkPlaceUpdateReq {
     private String detailAddress;
     private String openTime; // "HH:mm"
     private String closeTime;
+    private Long minBudget;
+    private Long maxBudget;
     private Boolean isOnline;
     private List<Long> categoryIds;
     private List<Long> moodIds;

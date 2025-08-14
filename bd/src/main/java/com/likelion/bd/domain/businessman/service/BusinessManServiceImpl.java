@@ -2,29 +2,27 @@ package com.likelion.bd.domain.businessman.service;
 
 import com.likelion.bd.domain.businessman.entity.*;
 import com.likelion.bd.domain.businessman.repository.*;
-import com.likelion.bd.domain.businessman.web.dto.WorkPlaceCreateReq;
-import com.likelion.bd.domain.businessman.web.dto.WorkPlaceCreateRes;
-import com.likelion.bd.domain.businessman.web.dto.WorkPlaceUpdateReq;
-import com.likelion.bd.domain.businessman.web.dto.WorkPlaceUpdateRes;
+import com.likelion.bd.domain.businessman.web.dto.*;
 import com.likelion.bd.domain.user.entity.User;
-import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponseCode;
-import com.likelion.bd.global.response.code.ErrorResponseCode;
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import com.likelion.bd.global.response.code.businessMan.WorkPlaceErrorReponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class WorkPlaceServiceImpl implements WorkPlaceService {
+public class BusinessManServiceImpl implements BusinessManService {
 
     private final UserRepository userRepository;
     private final WorkPlaceRepository workPlaceRepository;
@@ -41,18 +39,6 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
         User user = userRepository.findById(workPlaceCreateReq.getUserId())
                 .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
 
-        //사업자 엔티티를 찾기
-        //BusinessMan을 작성 시 User를 외래키로 관리하면 userId로 BusinessMan을 찾는 쿼리가 필요할 수 있음
-        //아래와 같다.
-//        BusinessMan businessMan = businessManRepository.findByUser(user)
-//                .orElseGet(() -> {
-//                    // 이 블록은 "없을 때만 실행"
-//                    BusinessMan bm = BusinessMan.builder().user(user).build();
-//                    return businessManRepository.save(bm);
-//                });
-// 여기서 bm은 무조건 존재 (기존 or 신규)
-
-
         //빌더패턴에선 직접적으로 try-catch를 사용하지 못하므로 사전에 openTime,closeTime을 검증해줘야한다.
         LocalTime openTime;
         LocalTime closeTime;
@@ -68,6 +54,8 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
                 .name(workPlaceCreateReq.getName())
                 .address(workPlaceCreateReq.getAddress())
                 .detailAddress(workPlaceCreateReq.getDetailAddress())
+                .minBudget(workPlaceCreateReq.getMinBudget())
+                .maxBudget(workPlaceCreateReq.getMaxBudget())
                 .openTime(openTime)
                 .closeTime(closeTime)
                 .isOnline(workPlaceCreateReq.getIsOnline())
@@ -111,6 +99,7 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
                 .user(user)
                 .workPlace(workPlace)
                 .build();
+        businessManRepository.save(businessMan);
 
         return new WorkPlaceCreateRes(
                 businessMan.getBusinessManId()
@@ -126,7 +115,7 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
                 .orElseThrow( ()-> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
 
         //사업자 조회
-        BusinessMan businessMan = businessManRepository.findByUser(user)
+        BusinessMan businessMan = businessManRepository.findByUserUserId(userPrincipal.getId())
                 .orElseThrow(() -> new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
 
         //사업장 조회
@@ -150,6 +139,8 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
                 workPlaceUpdateReq.getDetailAddress(),
                 openTime,
                 closeTime,
+                workPlaceUpdateReq.getMinBudget(),
+                workPlaceUpdateReq.getMaxBudget(),
                 workPlaceUpdateReq.getIsOnline()
         );
 
@@ -187,6 +178,77 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
 
         return new WorkPlaceUpdateRes(
                 businessMan.getBusinessManId()
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BusinessMyPageRes mypage(UserPrincipal userPrincipal) {
+
+        BusinessMan businessMan = businessManRepository.findByUserUserId(userPrincipal.getId())
+                .orElseThrow( ()-> new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
+
+        User user = businessMan.getUser();
+
+        WorkPlace workPlace = businessMan.getWorkPlace();
+
+        List<String> categoryList = workPlace.getCategoryList().stream()
+                .map(category -> category.getCategory().getName())
+                .toList();
+
+        List<String> moodList = workPlace.getMoodList().stream()
+                .map(mood -> mood.getMood().getName())
+                .toList();
+
+        List<String> promotionList = workPlace.getPromotionList().stream()
+                .map(promotion -> promotion.getPromotion().getName())
+                .toList();
+
+        //소수점 2자리까지 처리한다.
+        BigDecimal avgScore = BigDecimal.ZERO;
+        if (businessMan.getReviewCount() > 0) {
+            avgScore = BigDecimal.valueOf(businessMan.getTotalScore())
+                    .divide(BigDecimal.valueOf(businessMan.getReviewCount()), 2, RoundingMode.HALF_UP);
+        }
+        String avgText = String.format("%.2f", avgScore);
+
+        return new BusinessMyPageRes(
+                user.getNickname(),
+                workPlace.getName(),
+                workPlace.getAddress(),
+                workPlace.getDetailAddress(),
+                user.getIntroduction(),
+                //LocalTime에서 String으로 변환하면 자동으로 HH:mm형태로 파싱된다.
+                workPlace.getOpenTime().toString(),
+                workPlace.getCloseTime().toString(),
+                avgText,
+                categoryList,
+                moodList,
+                promotionList
+        );
+    }
+
+    @Override
+    public BusinessHomeRes home(UserPrincipal userPrincipal) {
+        BusinessMan businessMan = businessManRepository.findByUserUserId(userPrincipal.getId())
+                .orElseThrow(()->new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
+
+        User user = businessMan.getUser();
+
+        WorkPlace workPlace = businessMan.getWorkPlace();
+
+        //소수점 2자리까지 처리한다.
+        BigDecimal avgScore = BigDecimal.ZERO;
+        if (businessMan.getReviewCount() > 0) {
+            avgScore = BigDecimal.valueOf(businessMan.getTotalScore())
+                    .divide(BigDecimal.valueOf(businessMan.getReviewCount()), 2, RoundingMode.HALF_UP);
+        }
+        String avgText = String.format("%.2f", avgScore);
+
+        return new BusinessHomeRes(
+                user.getNickname(),
+                workPlace.getName(),
+                avgText
         );
     }
 }
