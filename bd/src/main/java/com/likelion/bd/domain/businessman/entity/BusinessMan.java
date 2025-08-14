@@ -28,7 +28,7 @@ public class BusinessMan {
     private WorkPlace workPlace;
 
     @Column(name = "total_score")
-    private Long totalScore;
+    private Double totalScore;
 
     @Column(name = "review_count")
     private Long reviewCount;
