@@ -101,7 +101,7 @@ public class UserController {
     // 인증번호 전송
     @PostMapping("/sendcode")
     public ResponseEntity<SuccessResponse<?>> sendCode(
-            @RequestBody CheckEmailReq checkEmailReq
+            @RequestBody @Valid CheckEmailReq checkEmailReq
     ) {
 
         userService.sendCodeToEmail(checkEmailReq);
@@ -114,13 +114,26 @@ public class UserController {
     // 인증번호 검증
     @PostMapping("/verifycode")
     public ResponseEntity<SuccessResponse<?>> verifyCode(
-            @RequestBody CheckEmailReq checkEmailReq
+            @RequestBody @Valid CheckEmailReq checkEmailReq
     ) {
 
         userService.verifyCode(checkEmailReq);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(SuccessResponse.emptyCustom("인증번호가 일치합니다"));
+                .body(SuccessResponse.emptyCustom("인증번호가 일치합니다."));
+    }
+
+    // 비밀번호 변경
+    @PostMapping("/pwchange")
+    public  ResponseEntity<SuccessResponse<?>> changePassword(
+            @RequestBody @Valid UserSigninReq userSigninReq
+    ) {
+
+        userService.changePassword(userSigninReq);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.emptyCustom("비밀번호가 변경되었습니다."));
     }
 }
