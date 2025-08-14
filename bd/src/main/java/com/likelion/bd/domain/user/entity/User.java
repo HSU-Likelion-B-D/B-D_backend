@@ -50,4 +50,9 @@ public class User extends BaseEntity {
         this.profileImage = newImageUrl;
         this.introduction = newIntroduction;
     }
+
+    // 비밀번호 변경을 위한 메서드
+    public void changePassword(String password) {
+        this.password = password;
+    }
 }
