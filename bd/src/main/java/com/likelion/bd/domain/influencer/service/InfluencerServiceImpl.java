@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -147,20 +149,23 @@ public class InfluencerServiceImpl implements InfluencerService {
                 .map(apt -> apt.getPreferTopic().getName())
                 .toList();
 
-
+        // 382K+, 3M+ ...
         String formattedFollowers = activity.formatFollowers();
 
-        double avgScore = 0.00;
-        if (influencer.getReviewCount() != 0) {
-            avgScore = (double) influencer.getTotalScore() / influencer.getReviewCount();
+        // 소수점 2자리까지 처리
+        BigDecimal avgScore = BigDecimal.ZERO;
+        if (influencer.getReviewCount() > 0) {
+            avgScore = BigDecimal.valueOf(influencer.getTotalScore())
+                    .divide(BigDecimal.valueOf(influencer.getReviewCount()), 2, RoundingMode.HALF_UP);
         }
+        String avgText = String.format("%.2f", avgScore);
 
         return new InfluencerMyPageRes(
                 user.getProfileImage(),
                 activity.getActivityName(),
                 user.getName(),
                 formattedFollowers,
-                avgScore,
+                avgText,
                 influencer.getReviewCount(),
                 activity.getSnsUrl(),
                 activity.getMinAmount(),
