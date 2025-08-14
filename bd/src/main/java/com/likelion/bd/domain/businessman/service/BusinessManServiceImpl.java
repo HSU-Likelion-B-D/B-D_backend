@@ -213,6 +213,7 @@ public class BusinessManServiceImpl implements BusinessManService {
         String avgText = String.format("%.2f", avgScore);
 
         return new BusinessMyPageRes(
+                user.getProfileImage(),
                 user.getNickname(),
                 workPlace.getName(),
                 workPlace.getAddress(),
@@ -222,6 +223,9 @@ public class BusinessManServiceImpl implements BusinessManService {
                 workPlace.getOpenTime().toString(),
                 workPlace.getCloseTime().toString(),
                 avgText,
+                workPlace.getMinBudget(),
+                workPlace.getMaxBudget(),
+                businessMan.getReviewCount(),
                 categoryList,
                 moodList,
                 promotionList
@@ -246,9 +250,11 @@ public class BusinessManServiceImpl implements BusinessManService {
         String avgText = String.format("%.2f", avgScore);
 
         return new BusinessHomeRes(
+                user.getProfileImage(),
                 user.getNickname(),
                 workPlace.getName(),
-                avgText
+                avgText,
+                businessMan.getReviewCount()
         );
     }
 }
