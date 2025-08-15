@@ -90,6 +90,26 @@ public class Activity extends BaseEntity {
 
     // -------------------------------------------------------------------------------------
 
+    public void updateBasicInfo(
+            String activityName,
+            String snsUrl,
+            Long followerCount,
+            UploadFrequency uploadFrequency,
+            String bankName,
+            String accountNumber,
+            Long minAmount,
+            Long maxAmount
+    ) {
+        this.activityName = activityName;
+        this.snsUrl = snsUrl;
+        this.followerCount = followerCount;
+        this.uploadFrequency = uploadFrequency;
+        this.bankName = bankName;
+        this.accountNumber = accountNumber;
+        this.minAmount = minAmount;
+        this.maxAmount = maxAmount;
+    }
+
     public String formatFollowers() {
         // null or 음수일 경우 예외 처리
         if (this.followerCount == null || this.followerCount < 0) {
