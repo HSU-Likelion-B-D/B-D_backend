@@ -4,6 +4,7 @@ import com.likelion.bd.domain.influencer.entity.*;
 import com.likelion.bd.domain.influencer.repository.*;
 import com.likelion.bd.domain.influencer.web.dto.ActivityCreateReq;
 import com.likelion.bd.domain.influencer.web.dto.ActivityCreateRes;
+import com.likelion.bd.domain.influencer.web.dto.ActivityUpdateReq;
 import com.likelion.bd.domain.influencer.web.dto.InfluencerMyPageRes;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.repository.UserRepository;
@@ -124,6 +125,124 @@ public class InfluencerServiceImpl implements InfluencerService {
         return new ActivityCreateRes(
                 influencer.getInfluencerId()
         );
+    }
+
+    @Override
+    @Transactional
+    public void updateActivity(
+            ActivityUpdateReq activityUpdateReq,
+            Long userId
+    ) {
+
+        Influencer influencer = influencerRepository.findByUserUserId(userId)
+                .orElseThrow(() -> new CustomException(InfluencerErrorResponseCode.INFLUENCER_NOT_FOUND_404));
+
+        Activity activity = activityRepository.findById(influencer.getActivity().getActivityId())
+                .orElseThrow(() -> new CustomException(ActivityErrorResponseCode.ACTIVITY_NOT_FOUND_404));
+
+        String activityName = activity.getActivityName();
+        String snsUrl = activity.getSnsUrl();
+        Long followerCount = activity.getFollowerCount();
+        UploadFrequency uploadFrequency = activity.getUploadFrequency();
+        String bankName = activity.getBankName();
+        String accountNumber = activity.getAccountNumber();
+        Long minAmount = activity.getMinAmount();
+        Long maxAmount = activity.getMaxAmount();
+
+        if (activityUpdateReq.getActivityName() != null && !activityUpdateReq.getActivityName().isEmpty()) {
+            activityName = activityUpdateReq.getActivityName();
+        }
+        if (activityUpdateReq.getSnsUrl() != null && !activityUpdateReq.getSnsUrl().isEmpty()) {
+            snsUrl = activityUpdateReq.getSnsUrl();
+        }
+        if (activityUpdateReq.getFollowerCount() != null) {
+            followerCount = activityUpdateReq.getFollowerCount();
+        }
+        if (activityUpdateReq.getUploadFrequency() != null) {
+            uploadFrequency = UploadFrequency.fromValue(activityUpdateReq.getUploadFrequency());
+        }
+        if (activityUpdateReq.getBankName() != null && !activityUpdateReq.getBankName().isEmpty()) {
+            bankName = activityUpdateReq.getBankName();
+        }
+        if  (activityUpdateReq.getAccountNumber() != null && !activityUpdateReq.getAccountNumber().isEmpty()) {
+            accountNumber = activityUpdateReq.getAccountNumber();
+        }
+        if (activityUpdateReq.getMinAmount() != null) {
+            minAmount = activityUpdateReq.getMinAmount();
+        }
+        if (activityUpdateReq.getMaxAmount() != null) {
+            maxAmount = activityUpdateReq.getMaxAmount();
+        }
+
+        activity.updateBasicInfo(
+                activityName, snsUrl, followerCount, uploadFrequency,
+                bankName, accountNumber, minAmount, maxAmount);
+
+        // -------------------------------------------------------------------------------------------------------
+
+        if (activityUpdateReq.getPlatformIds() != null && !activityUpdateReq.getPlatformIds().isEmpty()) {
+            activity.getActivityPlatformList().clear();
+
+            for (Long platformId : activityUpdateReq.getPlatformIds()) {
+                Platform platform = platformRepository.findById(platformId)
+                        .orElseThrow(() -> new CustomException(ActivityErrorResponseCode.PLATFORM_NOT_FOUND_404));
+
+                ActivityPlatform ap = ActivityPlatform.builder()
+                        .activity(activity)
+                        .platform(platform)
+                        .build();
+
+                activity.addActivityPlatform(ap);
+            }
+        }
+
+        if (activityUpdateReq.getContentTopicIds() != null && !activityUpdateReq.getContentTopicIds().isEmpty()) {
+            activity.getActivityContentTopicList().clear();
+
+            for (Long contentTopicId : activityUpdateReq.getContentTopicIds()) {
+                ContentTopic contentTopic = contentTopicRepository.findById(contentTopicId)
+                        .orElseThrow(() -> new CustomException(ActivityErrorResponseCode.CONTENTTOPIC_NOT_FOUND_404));
+
+                ActivityContentTopic act = ActivityContentTopic.builder()
+                        .activity(activity)
+                        .contentTopic(contentTopic)
+                        .build();
+
+                activity.addActivityContentTopic(act);
+            }
+        }
+
+        if (activityUpdateReq.getContentStyleIds() != null && !activityUpdateReq.getContentStyleIds().isEmpty()) {
+            activity.getActivityContentStyleList().clear();
+
+            for (Long contentStyleId : activityUpdateReq.getContentStyleIds()) {
+                ContentStyle contentStyle = contentStyleRepository.findById(contentStyleId)
+                        .orElseThrow(() -> new CustomException(ActivityErrorResponseCode.CONTENTSTYLE_NOT_FOUND_404));
+
+                ActivityContentStyle acs = ActivityContentStyle.builder()
+                        .activity(activity)
+                        .contentStyle(contentStyle)
+                        .build();
+
+                activity.addActivityContentStyle(acs);
+            }
+        }
+
+        if (activityUpdateReq.getPreferTopicIds() != null && !activityUpdateReq.getPreferTopicIds().isEmpty()) {
+            activity.getActivityPreferTopicList().clear();
+
+            for (Long preferTopicId : activityUpdateReq.getPreferTopicIds()) {
+                PreferTopic preferTopic = preferTopicRepository.findById(preferTopicId)
+                        .orElseThrow(() -> new CustomException(ActivityErrorResponseCode.PREPERTOPIC_NOT_FOUND_404));
+
+                ActivityPreferTopic apt = ActivityPreferTopic.builder()
+                        .activity(activity)
+                        .preferTopic(preferTopic)
+                        .build();
+
+                activity.addActivityPreferTopic(apt);
+            }
+        }
     }
 
     @Override
