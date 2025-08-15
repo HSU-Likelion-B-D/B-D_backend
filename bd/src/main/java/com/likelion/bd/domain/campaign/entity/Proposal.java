@@ -1,5 +1,6 @@
 package com.likelion.bd.domain.campaign.entity;
 
+import com.likelion.bd.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "proposal") // 제안서
-public class Proposal {
+public class Proposal extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PROPOSAL_ID")
