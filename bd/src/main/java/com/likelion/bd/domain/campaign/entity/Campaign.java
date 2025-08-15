@@ -28,9 +28,13 @@ public class Campaign {
     @Column(name = "RECEIVER_ROLE", nullable = false)
     private String receiverRole;
 
-//    @OneToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "proposalId")
-//    private Proposal proposal;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATE")
+    private CampaignStatus state;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "proposalId")
+    private Proposal proposal;
 
 
 }
