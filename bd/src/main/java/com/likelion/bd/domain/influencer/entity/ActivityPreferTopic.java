@@ -20,6 +20,6 @@ public class ActivityPreferTopic {
     private Activity activity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CONTENTTOPIC_ID", nullable = false)
+    @JoinColumn(name = "PREFERTOPIC_ID", nullable = false)
     private PreferTopic preferTopic;
 }
