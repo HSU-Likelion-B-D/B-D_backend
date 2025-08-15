@@ -54,12 +54,14 @@ public class SecurityConfig {
 
                         .requestMatchers("/user/signup", "/user/profile", "/user/signin",
                                 "/user/check-email", "/user/check-nickname",
-                                "/influencer/create", "/user/sendcode", "/user/verifycode",
+                                "/user/sendcode", "/user/verifycode",
                                 "user/pwchange").permitAll()
-                        .requestMatchers("/influencer/mypage").hasRole("INFLUENCER")
-                        .requestMatchers("/influencer/update").authenticated()
+                        // 자영업자
                         .requestMatchers(HttpMethod.POST,"/api/businessman/workplaces").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/businessman/workplaces").hasRole("BUSINESS")
+                        // 인플루언서
+                        .requestMatchers(HttpMethod.POST,"/api/influencer/activities").permitAll()
+                        .requestMatchers("/api/influencer/mypage").hasRole("INFLUENCER")
                         .anyRequest().authenticated()  // 그 외 요청은 전부 토큰 필요
                 );
 

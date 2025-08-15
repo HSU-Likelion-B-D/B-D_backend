@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/influencer")
+@RequestMapping("/api/influencer")
 public class InfluencerController {
 
     private final InfluencerService influencerService;
 
-    @PostMapping("/create")
+    @PostMapping("/activities") // 인플루언서 활동 생성
     public ResponseEntity<SuccessResponse<?>> createActivity(
             @RequestBody @Valid ActivityCreateReq activityCreateReq
     ) {
@@ -32,7 +32,7 @@ public class InfluencerController {
                 .body(SuccessResponse.ok(activityCreateRes));
     }
 
-    @GetMapping("/mypage")
+    @GetMapping("/mypage") // 인플루언서 활동 정보 수정
     public  ResponseEntity<SuccessResponse<?>> myPage(
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
