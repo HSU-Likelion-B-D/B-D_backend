@@ -58,7 +58,7 @@ public class CampaignServiceImpl implements CampaignService {
             LocalDate endDate = (p != null) ? p.getEndDate() : null;
 
             // 상태는 코드 문자열로
-            String statusStr = (c.getState() != null) ? c.getState().name() : null;
+            String statusStr = (c.getState() != null) ? c.getState().getKoLabel() : null;
 
             return new CampaignListRes(
                     user.getProfileImage(), // imgUrl
