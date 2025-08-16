@@ -1,5 +1,6 @@
 package com.likelion.bd.domain.campaign.entity;
 
+import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,17 +22,18 @@ public class Proposal extends BaseEntity {
     @Column(name = "PROPOSAL_ID")
     private Long proposalId;
 
-    @Column(name = "WRITER_ID", nullable = false, unique = true)
+    @Column(name = "WRITER_ID", nullable = false)
     private Long writerId; // 작성자 ID
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "WRITER_ROLE")
+    private UserRoleType writeRole; // 작성자 역할
 
     @Column(name = "TITLE")
     private String title; // 제안서 제목
 
-    @Column(name = "MIN_AMOUNT")
-    private Long minAmount; // 최소 금액
-
-    @Column(name = "MAX_AMOUNT")
-    private Long maxAmount; // 최대 금액
+    @Column(name = "OFFER_AMOUNT")
+    private Long offerAmount; // 제시 금액
 
     @Column(name = "START_DATE", nullable = false)
     private LocalDate startDate; // 시작 날짜
@@ -48,8 +50,7 @@ public class Proposal extends BaseEntity {
 
 /*
 제안서 제목
-최소 금액
-최대 금액
+제시 금액
 시작 날짜, str
 종료 날짜, str
 제안서 개요
