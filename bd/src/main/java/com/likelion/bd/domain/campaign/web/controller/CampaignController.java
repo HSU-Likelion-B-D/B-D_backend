@@ -26,8 +26,8 @@ public class CampaignController {
     @GetMapping
     /*
      * GET /api/campaigns?state=WAITING&page=3
-     * - 모두보기: /api/campaigns/me?all=true
-     * - 특정상태: /api/campaigns/me?state=WAITING   (all=false 또는 미포함)
+     * - 모두보기: /api/campaigns?all=true
+     * - 특정상태: /api/campaigns?state=WAITING   (all=false 또는 미포함)
      * - 프론트는 드롭다운에서 코드 문자열만 넘김 (라벨은 프론트에서 표시)
      * 기본 페이징: size=3
      */

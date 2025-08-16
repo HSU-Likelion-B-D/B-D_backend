@@ -63,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/influencer/activities").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/influencer/activities").hasRole("INFLUENCER")
                         .requestMatchers("/api/influencer/mypage").hasRole("INFLUENCER")
+                        .requestMatchers("/api/campaigns").hasAnyRole("BUSINESS","INFLUENCER")
                         .anyRequest().authenticated()  // 그 외 요청은 전부 토큰 필요
                 );
 
