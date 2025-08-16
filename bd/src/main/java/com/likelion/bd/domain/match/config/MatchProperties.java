@@ -41,5 +41,7 @@ public class MatchProperties {
     private double mClampMax = 12.0;
 
     // 도달력 로그 정규화 기준 백분위
+    //팔로워는 수치가 극단적이라 수십/수백만이 전체 점수를 압도한다.
+    //로그로 눌러서 체감 증가에 맞추어준다.
     private double reachPercentile = 0.95;
 }
