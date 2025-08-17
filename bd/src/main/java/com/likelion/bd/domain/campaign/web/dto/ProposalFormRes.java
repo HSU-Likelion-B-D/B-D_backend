@@ -28,7 +28,7 @@ public record ProposalFormRes(
 
     public record ExistInfo(
             String title,
-            Long offerAmount,
+            Long offerBudget,
             String startDate,
             String endDate,
             String overView,

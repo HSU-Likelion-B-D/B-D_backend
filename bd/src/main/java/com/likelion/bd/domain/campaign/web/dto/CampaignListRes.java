@@ -6,8 +6,7 @@ import java.time.LocalTime;
 public record CampaignListRes(
         String imgUrl,
         String title,
-        Long minBudget,
-        Long maxBudget,
+        Long offerBudget,
         LocalDate startDate,
         LocalDate endDate,
         String status

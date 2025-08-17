@@ -1,16 +1,18 @@
 package com.likelion.bd.domain.influencer.service;
 
+import com.likelion.bd.domain.businessman.entity.BusinessMan;
+import com.likelion.bd.domain.businessman.entity.WorkPlace;
+import com.likelion.bd.domain.businessman.web.dto.BusinessHomeRes;
 import com.likelion.bd.domain.influencer.entity.*;
 import com.likelion.bd.domain.influencer.repository.*;
-import com.likelion.bd.domain.influencer.web.dto.ActivityCreateReq;
-import com.likelion.bd.domain.influencer.web.dto.ActivityCreateRes;
-import com.likelion.bd.domain.influencer.web.dto.ActivityUpdateReq;
-import com.likelion.bd.domain.influencer.web.dto.InfluencerMyPageRes;
+import com.likelion.bd.domain.influencer.web.dto.*;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
+import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.code.Influencer.ActivityErrorResponseCode;
 import com.likelion.bd.global.response.code.Influencer.InfluencerErrorResponseCode;
+import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponseCode;
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -292,6 +294,31 @@ public class InfluencerServiceImpl implements InfluencerService {
                 contentTopics,
                 contentStyles,
                 preferTopics
+        );
+    }
+
+    @Override
+    public InfluencerHomeRes home(Long userId) {
+        Influencer influencer = influencerRepository.findByUserUserId(userId)
+                .orElseThrow(() -> new CustomException(InfluencerErrorResponseCode.INFLUENCER_NOT_FOUND_404));
+
+        User user = influencer.getUser();
+        Activity activity = influencer.getActivity();
+
+        //소수점 2자리까지 처리한다.
+        BigDecimal avgScore = BigDecimal.ZERO;
+        if (influencer.getReviewCount() > 0) {
+            avgScore = BigDecimal.valueOf(influencer.getTotalScore())
+                    .divide(BigDecimal.valueOf(influencer.getReviewCount()), 2, RoundingMode.HALF_UP);
+        }
+        String avgText = String.format("%.2f", avgScore);
+
+        return new InfluencerHomeRes(
+                user.getProfileImage(),
+                user.getNickname(),
+                activity.getActivityName(),
+                avgText,
+                influencer.getReviewCount()
         );
     }
 }
