@@ -255,16 +255,16 @@ public class InfluencerServiceImpl implements InfluencerService {
         User user = influencer.getUser();
         Activity activity = influencer.getActivity();
 
-        List<String> platformDto = activity.getActivityPlatformList().stream()
+        List<String> platforms = activity.getActivityPlatformList().stream()
                 .map(ap -> ap.getPlatform().getName())
                 .toList();
-        List<String> contentTopicDto = activity.getActivityContentTopicList().stream()
+        List<String> contentTopics = activity.getActivityContentTopicList().stream()
                 .map(act -> act.getContentTopic().getName())
                 .toList();
-        List<String> contentStyleDto = activity.getActivityContentStyleList().stream()
+        List<String> contentStyles = activity.getActivityContentStyleList().stream()
                 .map(acs -> acs.getContentStyle().getName())
                 .toList();
-        List<String> preferTopicDto = activity.getActivityPreferTopicList().stream()
+        List<String> preferTopics = activity.getActivityPreferTopicList().stream()
                 .map(apt -> apt.getPreferTopic().getName())
                 .toList();
 
@@ -288,10 +288,10 @@ public class InfluencerServiceImpl implements InfluencerService {
                 influencer.getReviewCount(),
                 activity.getSnsUrl(),
                 activity.getMinAmount(),
-                platformDto,
-                contentTopicDto,
-                contentStyleDto,
-                preferTopicDto
+                platforms,
+                contentTopics,
+                contentStyles,
+                preferTopics
         );
     }
 }
