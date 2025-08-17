@@ -12,16 +12,19 @@ public record ProposalFormRes(
 
     public interface DefaultInfo {
         String name(); // 실제 이름
+        String introduction(); // 자기 소개글
     }
 
     public record BusinessManInfo(
             String name,
+            String introduction,
             String workPlaceName,
             String workPlaceAddress
     ) implements DefaultInfo {}
 
     public record InfluencerInfo(
             String name,
+            String introduction,
             String activityName,
             List<String> platforms
     ) implements DefaultInfo {}
