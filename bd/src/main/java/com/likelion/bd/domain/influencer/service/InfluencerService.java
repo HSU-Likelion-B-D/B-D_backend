@@ -11,5 +11,5 @@ public interface InfluencerService {
 
     InfluencerMyPageRes myPage(Long userId);
 
-    //InfluencerHomeRes home(UserPrincipal userPrincipal);
+    InfluencerHomeRes home(Long userId);
 }
