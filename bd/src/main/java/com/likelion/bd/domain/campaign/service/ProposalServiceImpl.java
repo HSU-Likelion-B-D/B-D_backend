@@ -5,14 +5,13 @@ import com.likelion.bd.domain.campaign.repository.ProposalRepository;
 import com.likelion.bd.domain.campaign.web.dto.ProposalWriteReq;
 import com.likelion.bd.domain.campaign.web.dto.ProposalWriteRes;
 import com.likelion.bd.domain.user.entity.UserRoleType;
-import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.jwt.UserPrincipal;
-import com.likelion.bd.global.response.code.campaign.ProposalErrorResponseCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,32 +21,42 @@ public class ProposalServiceImpl implements ProposalService {
 
     @Override
     @Transactional
+    // 제안서 작성/수정
     public ProposalWriteRes writeProposal(ProposalWriteReq proposalWriteReq, UserPrincipal userPrincipal) {
-        proposalRepository.findByWriterId(userPrincipal.getId())
-                .ifPresent(proposal -> {
-                    // 존재할 경우, 예외를 발생시켜 중복 생성을 막습니다.
-                    throw new CustomException(ProposalErrorResponseCode.PROPOSAL_ALREADY_EXISTS_409); // 예시 에러
+
+        Optional<Proposal> optionalProposal = proposalRepository.findByWriterId(userPrincipal.getId());
+
+        Proposal proposal = optionalProposal
+                .map(existProposal -> {
+                    existProposal.updateProposal(proposalWriteReq, userPrincipal.getRole());
+                    return existProposal;
+                })
+                .orElseGet(() -> {
+                    LocalDate startDate = LocalDate.parse(proposalWriteReq.getStartDate());
+                    LocalDate endDate = LocalDate.parse(proposalWriteReq.getEndDate());
+
+                    String contentTopic = null; // 자영업자면 그냥 null
+                    if (UserRoleType.valueOf(userPrincipal.getRole()) == UserRoleType.INFLUENCER) {
+                        if (proposalWriteReq.getContentTopic() != null && !proposalWriteReq.getContentTopic().isEmpty()) {
+                            contentTopic = proposalWriteReq.getContentTopic();
+                        }
+                    }
+
+                    Proposal saveProposal = Proposal.builder()
+                            .writerId(userPrincipal.getId())
+                            .writeRole(UserRoleType.valueOf(userPrincipal.getRole()))
+                            .title(proposalWriteReq.getTitle())
+                            .offerAmount(proposalWriteReq.getOfferAmount())
+                            .startDate(startDate)
+                            .endDate(endDate)
+                            .overView(proposalWriteReq.getOverView())
+                            .request(proposalWriteReq.getRequest())
+                            .contentTopic(contentTopic) // 인플루언서 전용 필드
+                            .build();
+
+                    return proposalRepository.save(saveProposal);
                 });
 
-        LocalDate startDate = LocalDate.parse(proposalWriteReq.getStartDate());
-        LocalDate endDate = LocalDate.parse(proposalWriteReq.getEndDate());
-        System.out.println(UserRoleType.valueOf(userPrincipal.getRole()));
-
-        Proposal proposal = Proposal.builder()
-                .writerId(userPrincipal.getId())
-                .writeRole(UserRoleType.valueOf(userPrincipal.getRole()))
-                .title(proposalWriteReq.getTitle())
-                .offerAmount(proposalWriteReq.getOfferAmount())
-                .startDate(startDate)
-                .endDate(endDate)
-                .overView(proposalWriteReq.getOverView())
-                .request(proposalWriteReq.getRequest())
-                .build();
-
-        Proposal saveProposal = proposalRepository.save(proposal);
-
-        return new ProposalWriteRes(
-                saveProposal.getProposalId()
-        );
+        return new ProposalWriteRes(proposal.getProposalId());
     }
 }

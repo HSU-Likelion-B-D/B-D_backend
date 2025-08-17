@@ -24,5 +24,7 @@ public class ProposalWriteReq {
     @NotBlank(message = "개요는 필수 입력 값 입니다.")
     private String overView; // 개요
 
-        private String request; // 요청사항
+    private String request; // 요청사항
+
+    private String contentTopic; // 컨텐츠 분야(인플루언서 전용)
 }
