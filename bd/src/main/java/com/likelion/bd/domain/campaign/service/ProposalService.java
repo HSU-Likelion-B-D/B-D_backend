@@ -6,5 +6,6 @@ import com.likelion.bd.global.jwt.UserPrincipal;
 
 public interface ProposalService {
 
-    ProposalWriteRes writeProposal(ProposalWriteReq proposalWriteReq, UserPrincipal userPrincipal); // 제안서 작성
+    // 제안서 작성/수정
+    ProposalWriteRes writeProposal(ProposalWriteReq proposalWriteReq, UserPrincipal userPrincipal);
 }
