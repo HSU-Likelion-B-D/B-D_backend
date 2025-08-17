@@ -1,6 +1,13 @@
 package com.likelion.bd.domain.influencer.web.dto;
 
-public record InfluencerHomeRes() {
+public record InfluencerHomeRes(
+        String imgUrl,
+        String nickName,
+        String activityName,
+        String avgScore,
+        Long reviewCount
+) {
+
 }
 
 /*
