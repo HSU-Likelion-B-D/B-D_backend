@@ -1,10 +1,7 @@
 package com.likelion.bd.domain.influencer.web.controller;
 
 import com.likelion.bd.domain.influencer.service.InfluencerService;
-import com.likelion.bd.domain.influencer.web.dto.ActivityCreateReq;
-import com.likelion.bd.domain.influencer.web.dto.ActivityCreateRes;
-import com.likelion.bd.domain.influencer.web.dto.ActivityUpdateReq;
-import com.likelion.bd.domain.influencer.web.dto.InfluencerMyPageRes;
+import com.likelion.bd.domain.influencer.web.dto.*;
 import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.SuccessResponse;
 import jakarta.validation.Valid;
@@ -47,7 +44,7 @@ public class InfluencerController {
     }
 
     @GetMapping("/mypage") // 인플루언서 활동 정보 수정
-    public  ResponseEntity<SuccessResponse<?>> myPage(
+    public ResponseEntity<SuccessResponse<?>> myPage(
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
 
@@ -56,5 +53,17 @@ public class InfluencerController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(SuccessResponse.ok(influencerMyPageRes));
+    }
+
+    @GetMapping("/home")
+    public ResponseEntity<SuccessResponse<?>> home(
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+
+        InfluencerHomeRes influencerHomeRes = influencerService.home(userPrincipal.getId());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.ok(influencerHomeRes));
     }
 }
