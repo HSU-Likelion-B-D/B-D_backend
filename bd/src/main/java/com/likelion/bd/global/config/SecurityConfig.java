@@ -62,7 +62,8 @@ public class SecurityConfig {
                         // 인플루언서
                         .requestMatchers(HttpMethod.POST,"/api/influencer/activities").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/influencer/activities").hasRole("INFLUENCER")
-                        .requestMatchers("/api/influencer/mypage").hasRole("INFLUENCER")
+                        .requestMatchers(HttpMethod.GET,"/api/influencer/home").hasRole("INFLUENCER")
+                        .requestMatchers(HttpMethod.GET,"/api/influencer/mypage").hasRole("INFLUENCER")
                         // 캠페인
                         .requestMatchers("/api/campaigns").hasAnyRole("BUSINESS","INFLUENCER")
                         .requestMatchers(HttpMethod.GET, "/api/proposal/write").authenticated()
