@@ -33,8 +33,8 @@ public class Proposal extends BaseEntity {
     @Column(name = "TITLE")
     private String title; // 제안서 제목
 
-    @Column(name = "OFFER_AMOUNT")
-    private Long offerAmount; // 제시 금액
+    @Column(name = "OFFER_BUDGET")
+    private Long offerBudget; // 제시 금액
 
     @Column(name = "START_DATE", nullable = false)
     private LocalDate startDate; // 시작 날짜
@@ -56,7 +56,7 @@ public class Proposal extends BaseEntity {
     // 제안서 수정 메소드
     public void updateProposal(ProposalWriteReq req, String role) {
         this.title = req.getTitle();
-        this.offerAmount = req.getOfferAmount();
+        this.offerBudget = req.getOfferBudget();
         this.startDate = LocalDate.parse(req.getStartDate());
         this.endDate = LocalDate.parse(req.getEndDate());
         this.overView = req.getOverView();

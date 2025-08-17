@@ -70,7 +70,7 @@ public class ProposalServiceImpl implements ProposalService {
 
                     return new ProposalFormRes.ExistInfo(
                             proposal.getTitle(),
-                            proposal.getOfferAmount(),
+                            proposal.getOfferBudget(),
                             proposal.getStartDate().toString(),
                             proposal.getEndDate().toString(),
                             proposal.getOverView(),
@@ -109,7 +109,7 @@ public class ProposalServiceImpl implements ProposalService {
                             .writerId(userPrincipal.getId())
                             .writeRole(UserRoleType.valueOf(userPrincipal.getRole()))
                             .title(proposalWriteReq.getTitle())
-                            .offerAmount(proposalWriteReq.getOfferAmount())
+                            .offerBudget(proposalWriteReq.getOfferBudget())
                             .startDate(startDate)
                             .endDate(endDate)
                             .overView(proposalWriteReq.getOverView())
