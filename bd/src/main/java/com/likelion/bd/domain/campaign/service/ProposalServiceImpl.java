@@ -42,6 +42,7 @@ public class ProposalServiceImpl implements ProposalService {
 
             defaultInfo = new ProposalFormRes.BusinessManInfo(
                     businessMan.getUser().getName(),
+                    businessMan.getUser().getIntroduction(),
                     businessMan.getWorkPlace().getName(),
                     businessMan.getWorkPlace().getAddress()
             );
@@ -55,6 +56,7 @@ public class ProposalServiceImpl implements ProposalService {
 
             defaultInfo = new ProposalFormRes.InfluencerInfo(
                     influencer.getUser().getName(),
+                    influencer.getUser().getIntroduction(),
                     influencer.getActivity().getActivityName(),
                     platforms
             );
