@@ -16,6 +16,10 @@ jobs:
   deploy:
     name: Deploy to Server
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./bd
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
