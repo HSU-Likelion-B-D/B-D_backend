@@ -52,8 +52,7 @@ public class CampaignServiceImpl implements CampaignService {
         return campaignPage.map(c -> {
             Proposal p = c.getProposal(); // fetch 되어 있음(@EntityGraph)
             String title    = (p != null) ? p.getTitle()     : null;
-            Long minBudget  = (p != null) ? p.getMinAmount() : null;
-            Long maxBudget  = (p != null) ? p.getMaxAmount() : null;
+            Long offerAmount  = (p != null) ? p.getOfferAmount() : null;
             LocalDate startDate = (p != null) ? p.getStartDate() : null;
             LocalDate endDate = (p != null) ? p.getEndDate() : null;
 
@@ -63,8 +62,7 @@ public class CampaignServiceImpl implements CampaignService {
             return new CampaignListRes(
                     user.getProfileImage(), // imgUrl
                     title,
-                    minBudget,
-                    maxBudget,
+                    offerAmount,
                     startDate,
                     endDate,
                     statusStr
