@@ -84,8 +84,8 @@ public class CampaignServiceImpl implements CampaignService {
 
         // 모두보기(all=true)면 상태 무시, 아니면 상태 적용
         Page<Campaign> campaignPage = all
-                ? campaignRepository.findMyCampaignsAll(userId, role, pageReq)
-                : campaignRepository.findMyCampaignsByState(userId, role, state, pageReq);
+                ? campaignRepository.findMyCampaignsAll(userId, UserRoleType.valueOf(role), pageReq)
+                : campaignRepository.findMyCampaignsByState(userId, UserRoleType.valueOf(role), state, pageReq);
 
         return campaignPage.map(c -> {
             Proposal p = c.getProposal(); // fetch 되어 있음(@EntityGraph)
