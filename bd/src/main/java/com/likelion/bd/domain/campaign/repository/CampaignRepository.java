@@ -2,6 +2,7 @@ package com.likelion.bd.domain.campaign.repository;
 
 import com.likelion.bd.domain.campaign.entity.Campaign;
 import com.likelion.bd.domain.campaign.entity.CampaignStatus;
+import com.likelion.bd.domain.user.entity.UserRoleType;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -30,7 +31,7 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
         """
     )
     Page<Campaign> findMyCampaignsAll(@Param("userId") Long userId,
-                                      @Param("role") String role,
+                                      @Param("role") UserRoleType role,
                                       Pageable pageable);
 
     /*
@@ -55,7 +56,7 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
         """
     )
     Page<Campaign> findMyCampaignsByState(@Param("userId") Long userId,
-                                          @Param("role") String role,
+                                          @Param("role") UserRoleType role,
                                           @Param("state") CampaignStatus state,
                                           Pageable pageable);
 }
