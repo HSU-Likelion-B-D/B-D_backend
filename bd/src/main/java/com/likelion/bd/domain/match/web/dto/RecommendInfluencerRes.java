@@ -2,14 +2,15 @@ package com.likelion.bd.domain.match.web.dto;
 
 import java.util.List;
 
-public record RecommandInfluencerRes(
+public record RecommendInfluencerRes(
         String imgUrl,
         String nickname,
         String avgScore,
-        String reviewCount,
+        Long reviewCount,
         List<String> platform,
         Long followerCount,
         Long minBudget,
-        List<String> contentTopic
+        List<String> contentTopic,
+        Integer recommendScore
 ) {
 }

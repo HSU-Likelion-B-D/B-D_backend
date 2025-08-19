@@ -1,9 +1,9 @@
 package com.likelion.bd.domain.match.service;
 
-import com.likelion.bd.domain.match.web.dto.RecommandInfluencerRes;
+import com.likelion.bd.domain.match.web.dto.RecommendInfluencerRes;
 
 import java.util.List;
 
 public interface MatchService {
-    RecommandInfluencerRes top5ForBusinessMan(Long businessManId);
+    List<RecommendInfluencerRes> top5ForBusinessMan(Long businessManId);
 }
