@@ -89,6 +89,7 @@ public class CampaignServiceImpl implements CampaignService {
 
         return campaignPage.map(c -> {
             Proposal p = c.getProposal(); // fetch 되어 있음(@EntityGraph)
+
             String title = (p != null) ? p.getTitle() : null;
             Long offerBudget  = (p != null) ? p.getOfferBudget() : null;
             LocalDate startDate = (p != null) ? p.getStartDate() : null;
