@@ -71,15 +71,15 @@ class CampaignServiceImplTest {
         campaignList = new ArrayList<>();
 
         // 캠페인 1: 제안 받음 상태
-        Proposal proposal1 = Proposal.builder().proposalId(1L).writerId(user.getUserId()).title("맛있는 빵집 홍보 캠페인").offerBudget(100000L).startDate(LocalDate.now()).endDate(LocalDate.now().plusDays(10)).overView("오픈 기념 빵집 홍보").build();
+        Proposal proposal1 = Proposal.builder().proposalId(1L).writerId(user.getUserId()).title("맛있는 빵집 홍보 캠페인").offerAmount(100000L).startDate(LocalDate.now()).endDate(LocalDate.now().plusDays(10)).overView("오픈 기념 빵집 홍보").build();
         Campaign campaign1 = Campaign.builder().campaignId(1L).senderId(user.getUserId()).senderRole(user.getRole()).receiverId(2L).receiverRole(UserRoleType.INFLUENCER).proposal(proposal1).state(CampaignStatus.PROPOSED).build();
 
         // 캠페인 2: 완료 상태
-        Proposal proposal2 = Proposal.builder().proposalId(2L).writerId(user.getUserId()).title("여름 옷 쇼핑몰 캠페인").offerBudget(500000L).startDate(LocalDate.now().minusDays(20)).endDate(LocalDate.now().minusDays(10)).overView("여름 신상 의류 홍보").build();
+        Proposal proposal2 = Proposal.builder().proposalId(2L).writerId(user.getUserId()).title("여름 옷 쇼핑몰 캠페인").offerAmount(500000L).startDate(LocalDate.now().minusDays(20)).endDate(LocalDate.now().minusDays(10)).overView("여름 신상 의류 홍보").build();
         Campaign campaign2 = Campaign.builder().campaignId(2L).senderId(user.getUserId()).senderRole(user.getRole()).receiverId(3L).receiverRole(UserRoleType.INFLUENCER).proposal(proposal2).state(CampaignStatus.COMPLETED).build();
 
         // 캠페인 3: 제안 받음 상태
-        Proposal proposal3 = Proposal.builder().proposalId(3L).writerId(user.getUserId()).title("신규 카페 홍보").offerBudget(50000L).startDate(LocalDate.now().plusDays(5)).endDate(LocalDate.now().plusDays(15)).overView("분위기 좋은 신규 카페 홍보").build();
+        Proposal proposal3 = Proposal.builder().proposalId(3L).writerId(user.getUserId()).title("신규 카페 홍보").offerAmount(50000L).startDate(LocalDate.now().plusDays(5)).endDate(LocalDate.now().plusDays(15)).overView("분위기 좋은 신규 카페 홍보").build();
         Campaign campaign3 = Campaign.builder().campaignId(3L).senderId(user.getUserId()).senderRole(user.getRole()).receiverId(4L).receiverRole(UserRoleType.INFLUENCER).proposal(proposal3).state(CampaignStatus.PROPOSED).build();
 
         campaignList.add(campaign1);
@@ -116,7 +116,7 @@ class CampaignServiceImplTest {
             result.getContent().forEach(results -> {
                 System.out.println("  이미지 URL: " + results.imgUrl());
                 System.out.println("  제목: " + results.title());
-                System.out.println("  제안 금액: " + results.offerBudget());
+                System.out.println("  제안 금액: " + results.offerAmount());
                 System.out.println("  시작일: " + results.startDate());
                 System.out.println("  종료일: " + results.endDate());
                 System.out.println("  상태: " + results.status());
@@ -164,7 +164,7 @@ class CampaignServiceImplTest {
             resultPage.getContent().forEach(campaign -> {
                 System.out.println("  이미지 URL: " + campaign.imgUrl());
                 System.out.println("  제목: " + campaign.title());
-                System.out.println("  제안 금액: " + campaign.offerBudget());
+                System.out.println("  제안 금액: " + campaign.offerAmount());
                 System.out.println("  시작일: " + campaign.startDate());
                 System.out.println("  종료일: " + campaign.endDate());
                 System.out.println("  상태: " + campaign.status());

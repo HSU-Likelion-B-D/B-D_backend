@@ -1,5 +1,6 @@
 package com.likelion.bd.domain.campaign.entity;
 
+import com.likelion.bd.domain.user.entity.UserRoleType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,13 +21,13 @@ public class Campaign {
     private Long senderId;
 
     @Column(name = "SENDER_ROLE", nullable = false)
-    private String senderRole;
+    private UserRoleType senderRole;
 
     @Column(name = "RECEIVER_ID", nullable = false)
     private Long receiverId;
 
     @Column(name = "RECEIVER_ROLE", nullable = false)
-    private String receiverRole;
+    private UserRoleType receiverRole;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATE")
