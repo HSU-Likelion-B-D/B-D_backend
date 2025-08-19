@@ -34,6 +34,14 @@ jobs:
           port: 22
           script: |
             echo "${{ secrets.ENV_FILE }}" > /home/${{ secrets.SERVER_USER }}/.env
+            echo "SPRING_REDIS_HOST=my-redis" >> /home/${{ secrets.SERVER_USER }}/.env
+
+            docker network create my-app-network || true
+
+            docker stop my-redis || true
+            docker rm my-redis || true
+            docker run -d --name my-redis --network my-app-network redis:alpine
+            
             echo "[1/3] Pull latest Docker image..."
             docker pull ${{ env.IMAGE }}:latest
 
@@ -41,6 +49,7 @@ jobs:
             docker stop bd || true
             docker rm bd || true
             docker run -d --name bd \
+              --network my-app-network \
               --env-file /home/${{ secrets.SERVER_USER }}/.env \
               -p 8080:8080 \
               ${{ env.IMAGE }}:latest
