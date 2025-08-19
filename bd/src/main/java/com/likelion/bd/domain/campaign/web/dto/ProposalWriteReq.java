@@ -13,7 +13,7 @@ public class ProposalWriteReq {
     private String title; // 제안서 제목
 
     @NotNull(message = "제시 금액 필수 입력 값 입니다.")
-    private Long offerAmount; // 제시 금액
+    private Long offerBudget; // 제시 금액
 
     @NotBlank(message = "시작 날짜는 필수 입력 값 입니다.")
     private String startDate; // 시작 날짜
@@ -24,5 +24,7 @@ public class ProposalWriteReq {
     @NotBlank(message = "개요는 필수 입력 값 입니다.")
     private String overView; // 개요
 
-        private String request; // 요청사항
+    private String request; // 요청사항
+
+    private String contentTopic; // 컨텐츠 분야(인플루언서 전용)
 }

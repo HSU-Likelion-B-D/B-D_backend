@@ -1,16 +1,18 @@
 package com.likelion.bd.domain.influencer.service;
 
+import com.likelion.bd.domain.businessman.entity.BusinessMan;
+import com.likelion.bd.domain.businessman.entity.WorkPlace;
+import com.likelion.bd.domain.businessman.web.dto.BusinessHomeRes;
 import com.likelion.bd.domain.influencer.entity.*;
 import com.likelion.bd.domain.influencer.repository.*;
-import com.likelion.bd.domain.influencer.web.dto.ActivityCreateReq;
-import com.likelion.bd.domain.influencer.web.dto.ActivityCreateRes;
-import com.likelion.bd.domain.influencer.web.dto.ActivityUpdateReq;
-import com.likelion.bd.domain.influencer.web.dto.InfluencerMyPageRes;
+import com.likelion.bd.domain.influencer.web.dto.*;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
+import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.code.Influencer.ActivityErrorResponseCode;
 import com.likelion.bd.global.response.code.Influencer.InfluencerErrorResponseCode;
+import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponseCode;
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -255,16 +257,16 @@ public class InfluencerServiceImpl implements InfluencerService {
         User user = influencer.getUser();
         Activity activity = influencer.getActivity();
 
-        List<String> platformDto = activity.getActivityPlatformList().stream()
+        List<String> platforms = activity.getActivityPlatformList().stream()
                 .map(ap -> ap.getPlatform().getName())
                 .toList();
-        List<String> contentTopicDto = activity.getActivityContentTopicList().stream()
+        List<String> contentTopics = activity.getActivityContentTopicList().stream()
                 .map(act -> act.getContentTopic().getName())
                 .toList();
-        List<String> contentStyleDto = activity.getActivityContentStyleList().stream()
+        List<String> contentStyles = activity.getActivityContentStyleList().stream()
                 .map(acs -> acs.getContentStyle().getName())
                 .toList();
-        List<String> preferTopicDto = activity.getActivityPreferTopicList().stream()
+        List<String> preferTopics = activity.getActivityPreferTopicList().stream()
                 .map(apt -> apt.getPreferTopic().getName())
                 .toList();
 
@@ -288,10 +290,35 @@ public class InfluencerServiceImpl implements InfluencerService {
                 influencer.getReviewCount(),
                 activity.getSnsUrl(),
                 activity.getMinAmount(),
-                platformDto,
-                contentTopicDto,
-                contentStyleDto,
-                preferTopicDto
+                platforms,
+                contentTopics,
+                contentStyles,
+                preferTopics
+        );
+    }
+
+    @Override
+    public InfluencerHomeRes home(Long userId) {
+        Influencer influencer = influencerRepository.findByUserUserId(userId)
+                .orElseThrow(() -> new CustomException(InfluencerErrorResponseCode.INFLUENCER_NOT_FOUND_404));
+
+        User user = influencer.getUser();
+        Activity activity = influencer.getActivity();
+
+        //소수점 2자리까지 처리한다.
+        BigDecimal avgScore = BigDecimal.ZERO;
+        if (influencer.getReviewCount() > 0) {
+            avgScore = BigDecimal.valueOf(influencer.getTotalScore())
+                    .divide(BigDecimal.valueOf(influencer.getReviewCount()), 2, RoundingMode.HALF_UP);
+        }
+        String avgText = String.format("%.2f", avgScore);
+
+        return new InfluencerHomeRes(
+                user.getProfileImage(),
+                user.getNickname(),
+                activity.getActivityName(),
+                avgText,
+                influencer.getReviewCount()
         );
     }
 }
