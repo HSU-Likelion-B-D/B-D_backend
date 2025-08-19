@@ -1,0 +1,28 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  # Spring Boot 앱 서비스
+  spring-app:
+    # 🚨 본인의 Docker Hub 이미지 이름으로 수정해주세요
+    image: threejj333/bd:latest
+    container_name: bd-spring-app
+    ports:
+      - "8080:8080" # 서버 8080포트와 컨테이너 8080포트를 연결
+    env_file:
+      - ./.env # .env 파일의 변수를 모두 가져와서 사용
+    environment:
+      - SPRING_REDIS_HOST=redis # Redis 주소는 'redis'라고 알려줌
+    depends_on:
+      - redis
+
+  # Redis 서비스
+  redis:
+    image: "redis:alpine"
+    container_name: my-redis
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
