@@ -1,6 +1,7 @@
 package com.likelion.bd.domain.match.service;
 
 import com.likelion.bd.domain.businessman.entity.*;
+import com.likelion.bd.domain.businessman.repository.BusinessManRepository;
 import com.likelion.bd.domain.influencer.entity.*;
 import com.likelion.bd.domain.match.config.MatchProperties;
 import com.likelion.bd.domain.match.repository.BusinessManMatchRepository;
@@ -10,8 +11,10 @@ import com.likelion.bd.domain.match.util.SimilarityUtils;
 import com.likelion.bd.domain.match.util.StatsUtils;
 import com.likelion.bd.domain.match.web.dto.RecommendInfluencerRes;
 import com.likelion.bd.domain.user.entity.User;
+import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponseCode;
+import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,15 +26,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MatchServiceImpl implements MatchService {
 
+    private final BusinessManRepository businessManRepository;
     private final BusinessManMatchRepository businessManMatchRepository;
     private final InfluencerMatchRepository influencerMatchRepository;
+    private final UserRepository userRepository;
     private final MatchProperties props;
 
     @Override
-    public List<RecommendInfluencerRes> top5ForBusinessMan(Long businessManId) {
+    public List<RecommendInfluencerRes> top5ForBusinessMan(Long userId) {
+        User user = userRepository.findById(userId).
+                orElseThrow(()-> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
 
         //자영업자 1명 검색
-        BusinessMan businessMan = businessManMatchRepository.findById(businessManId)
+        BusinessMan businessMan = businessManRepository.findByUser(user)
                 .orElseThrow(() -> new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
 
         // 2) 사업장 특성 세트(정규화)
