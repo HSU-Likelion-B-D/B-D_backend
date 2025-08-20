@@ -98,6 +98,8 @@ public class BusinessManServiceImpl implements BusinessManService {
         BusinessMan businessMan = BusinessMan.builder()
                 .user(user)
                 .workPlace(workPlace)
+                .totalScore(0.0)
+                .reviewCount(0L)
                 .build();
         businessManRepository.save(businessMan);
 
