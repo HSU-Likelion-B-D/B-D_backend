@@ -7,12 +7,14 @@ import com.likelion.bd.domain.campaign.repository.CampaignRepository;
 import com.likelion.bd.domain.campaign.repository.ProposalRepository;
 import com.likelion.bd.domain.campaign.web.dto.CampaignCreateReq;
 import com.likelion.bd.domain.campaign.web.dto.CampaignListRes;
+import com.likelion.bd.domain.campaign.web.dto.CampaignResponseReq;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.code.AuthErrorResponseCode;
+import com.likelion.bd.global.response.code.campaign.CampaignErrorResponseCode;
 import com.likelion.bd.global.response.code.campaign.ProposalErrorResponseCode;
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -99,7 +101,7 @@ public class CampaignServiceImpl implements CampaignService {
             String statusStr = (c.getState() != null) ? c.getState().getKoLabel() : null;
 
             return new CampaignListRes(
-                    user.getUserId(),
+                    c.getCampaignId(),
                     user.getProfileImage(), // imgUrl
                     title,
                     offerBudget,
@@ -108,5 +110,19 @@ public class CampaignServiceImpl implements CampaignService {
                     statusStr
             );
         });
+    }
+
+    @Override
+    @Transactional
+    public void updateCampaign(CampaignResponseReq campaignResponseReq, UserPrincipal userPrincipal) {
+        Campaign campaign = campaignRepository.findById(campaignResponseReq.getCampaignId())
+                .orElseThrow(() -> new CustomException(CampaignErrorResponseCode.CAMPAIGN_NOT_FOUND_404));
+
+        // 제안서를 받은 쪽에서 수락/거절
+        if (!campaign.getReceiverId().equals(userPrincipal.getId())) {
+            throw new CustomException(AuthErrorResponseCode.FORBIDDEN_403);
+        }
+
+        campaign.updateState(campaignResponseReq.getResponse());
     }
 }
