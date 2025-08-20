@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @Entity
 @Getter
 @Builder
@@ -33,6 +36,17 @@ public class BusinessMan extends BaseEntity {
 
     @Column(name = "review_count")
     private Long reviewCount;
+
+    public String formatAverageScore(Double totalScore, Long reviewCount) {
+        //소수점 2자리까지 처리한다.
+        BigDecimal avgScore = BigDecimal.ZERO;
+        if (reviewCount > 0) {
+            avgScore = BigDecimal.valueOf(totalScore)
+                    .divide(BigDecimal.valueOf(reviewCount), 2, RoundingMode.HALF_UP);
+        }
+
+        return String.format("%.2f", avgScore);
+    }
 
     public void addReview(Double score) {
         this.totalScore += score;
