@@ -34,7 +34,15 @@ public class Campaign {
     @Column(name = "STATE")
     private CampaignStatus state;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "proposalId")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "proposalId", nullable = false)
     private Proposal proposal;
+
+    public void updateState(String state) {
+        if (state.equals("yes")) {
+            this.state = CampaignStatus.CONFIRMED_IN_PROGRESS;
+        } else if (state.equals("no")) {
+            this.state = CampaignStatus.CANCELED;
+        }
+    }
 }

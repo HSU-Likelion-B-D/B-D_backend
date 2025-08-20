@@ -4,10 +4,13 @@ import com.likelion.bd.domain.campaign.entity.CampaignStatus;
 import com.likelion.bd.domain.campaign.service.CampaignService;
 import com.likelion.bd.domain.campaign.web.dto.CampaignCreateReq;
 import com.likelion.bd.domain.campaign.web.dto.CampaignListRes;
+import com.likelion.bd.domain.campaign.web.dto.CampaignResponseReq;
 import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.SuccessResponse;
 import com.likelion.bd.global.response.code.SuccessResponseCode;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Fetch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -52,5 +55,18 @@ public class CampaignController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(SuccessResponse.ok(campaignListRes));
+    }
+
+    @PatchMapping
+    public ResponseEntity<SuccessResponse<?>> updateCampaign(
+            @RequestBody @Valid CampaignResponseReq campaignResponseReq,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+
+        campaignService.updateCampaign(campaignResponseReq, userPrincipal);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.emptyCustom("캠페인의 상태가 성공적으로 변경되었습니다."));
     }
 }
