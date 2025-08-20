@@ -52,6 +52,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
 
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/user/signup", "/user/profile", "/user/signin",
                                 "/user/check-email", "/user/check-nickname",
                                 "/user/sendcode", "/user/verifycode",
