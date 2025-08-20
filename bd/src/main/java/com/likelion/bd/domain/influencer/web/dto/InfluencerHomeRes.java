@@ -1,13 +1,24 @@
 package com.likelion.bd.domain.influencer.web.dto;
 
+import java.util.List;
+
 public record InfluencerHomeRes(
         String imgUrl,
         String nickName,
         String activityName,
         String avgScore,
-        Long reviewCount
+        Long reviewCount,
+        List<BusinessManSummaryRes> businessMans
 ) {
+    public record BusinessManSummaryRes(
+            Long businessManId,
+            String nickName,
+            String imgUrl,
+            String avgScore,
+            Long reviewCount
+    ) {
 
+    }
 }
 
 /*
