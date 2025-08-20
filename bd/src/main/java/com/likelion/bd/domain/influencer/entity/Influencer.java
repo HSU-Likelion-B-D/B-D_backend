@@ -34,8 +34,13 @@ public class Influencer {
     private Activity activity;
 
     @Column(name = "total_score")
-    private Long totalScore;
+    private Double totalScore;
 
     @Column(name = "review_count")
     private Long reviewCount;
+
+    public void addReview(Double score) {
+        this.totalScore += score;
+        this.reviewCount++;
+    }
 }

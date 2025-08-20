@@ -34,5 +34,8 @@ public class BusinessMan extends BaseEntity {
     @Column(name = "review_count")
     private Long reviewCount;
 
-
+    public void addReview(Double score) {
+        this.totalScore += score;
+        this.reviewCount++;
+    }
 }

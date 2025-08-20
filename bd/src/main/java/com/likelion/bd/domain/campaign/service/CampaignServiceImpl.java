@@ -36,9 +36,9 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     @Transactional
     public void createCampaign(CampaignCreateReq campaignCreateReq, UserPrincipal userPrincipal) {
-        // 보낸 사람 조회
-        User sender = userRepository.findByUserId(userPrincipal.getId())
-                .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
+        // 보낸 사람
+        Long senderId = userPrincipal.getId();
+        UserRoleType senderRole = UserRoleType.valueOf(userPrincipal.getRole());
 
         // 받는 사람 조회
         User recipient = userRepository.findByUserId(campaignCreateReq.getRecipientId())
@@ -49,13 +49,13 @@ public class CampaignServiceImpl implements CampaignService {
                 .orElseThrow(() -> new CustomException(ProposalErrorResponseCode.PROPOSAL_NOT_FOUND_404));
 
         // 제안서의 작성자 id와 보낸 사람의 id 비교
-        if (!proposal.getWriterId().equals(sender.getUserId())) {
+        if (!proposal.getWriterId().equals(senderId)) {
             throw new CustomException(AuthErrorResponseCode.FORBIDDEN_403);
         }
 
         Campaign campaign = Campaign.builder()
-                .senderId(sender.getUserId())
-                .senderRole(sender.getRole())
+                .senderId(senderId)
+                .senderRole(senderRole)
                 .receiverId(recipient.getUserId())
                 .receiverRole(recipient.getRole())
                 .proposal(proposal)

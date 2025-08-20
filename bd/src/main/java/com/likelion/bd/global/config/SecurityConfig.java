@@ -68,6 +68,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/campaigns").hasAnyRole("BUSINESS","INFLUENCER")
                         .requestMatchers(HttpMethod.GET, "/api/proposal/write").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/proposal/write").authenticated()
+                        // 리뷰
+                        .requestMatchers(HttpMethod.POST, "/api/review/write").authenticated()
                         //추천
                         .requestMatchers("/api/businessman/me/recommendations").hasRole("BUSINESS")
                         .anyRequest().authenticated()  // 그 외 요청은 전부 토큰 필요

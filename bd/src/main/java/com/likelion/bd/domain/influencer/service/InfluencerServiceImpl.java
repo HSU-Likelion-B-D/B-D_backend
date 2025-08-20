@@ -117,7 +117,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         Influencer influencer = Influencer.builder()
                 .user(user)
                 .activity(activity)
-                .totalScore(0L)
+                .totalScore(0.0)
                 .reviewCount(0L)
                 .build();
         influencerRepository.save(influencer);
