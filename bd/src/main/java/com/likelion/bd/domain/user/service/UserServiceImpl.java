@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtTokenProvider.createToken(user);
 
-        return new UserSigninRes(token);
+        return new UserSigninRes(user.getRole(), token);
     }
 
     // 회원 정보 수정
