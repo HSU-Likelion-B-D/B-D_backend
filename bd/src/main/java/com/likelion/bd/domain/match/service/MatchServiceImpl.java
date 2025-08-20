@@ -67,7 +67,7 @@ public class MatchServiceImpl implements MatchService {
         long sumReviews = 0L, sumScores = 0L; // totalScore는 5점 만점 "합계" 가정
         for (Influencer i : influencerList) {
             long rc = reviewCountOf(i);
-            Long ts = totalScoreOf(i);
+            Double ts = totalScoreOf(i);
             if (rc > 0 && ts != null) {
                 sumReviews += rc;
                 sumScores += ts;
@@ -214,7 +214,7 @@ public class MatchServiceImpl implements MatchService {
      */
     private double avgRating01Of(Influencer influencer) {
         long rc = reviewCountOf(influencer);
-        Long ts = totalScoreOf(influencer);
+        Double ts = totalScoreOf(influencer);
         if (rc <= 0 || ts == null) return 0.5;
         double avg5 = ((double) ts) / rc;
         double v = avg5 / 5.0;
@@ -224,7 +224,7 @@ public class MatchServiceImpl implements MatchService {
     /**
      * 평균 평점 문자열(소수 2자리). 리뷰 0이면 "0.00"
      */
-    private String formatAvgScore(Long totalScore, long reviewCount) {
+    private String formatAvgScore(Double totalScore, long reviewCount) {
         if (reviewCount <= 0 || totalScore == null) return "0.00";
         double avg5 = ((double) totalScore) / reviewCount; // 5점 만점 평균
         return new DecimalFormat("0.00").format(avg5);
@@ -241,7 +241,7 @@ public class MatchServiceImpl implements MatchService {
     /**
      * 합계 평점(5점 만점 합계) — 없으면 null
      */
-    private Long totalScoreOf(Influencer influencer) {
+    private Double totalScoreOf(Influencer influencer) {
         return influencer.getTotalScore();
     }
 

@@ -1,20 +1,19 @@
 package com.likelion.bd.domain.influencer.service;
 
 import com.likelion.bd.domain.businessman.entity.BusinessMan;
-import com.likelion.bd.domain.businessman.entity.WorkPlace;
-import com.likelion.bd.domain.businessman.web.dto.BusinessHomeRes;
+import com.likelion.bd.domain.businessman.repository.BusinessManRepository;
 import com.likelion.bd.domain.influencer.entity.*;
 import com.likelion.bd.domain.influencer.repository.*;
 import com.likelion.bd.domain.influencer.web.dto.*;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
-import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.code.Influencer.ActivityErrorResponseCode;
 import com.likelion.bd.global.response.code.Influencer.InfluencerErrorResponseCode;
-import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponseCode;
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +32,7 @@ public class InfluencerServiceImpl implements InfluencerService {
     private final ContentTopicRepository contentTopicRepository;
     private final ContentStyleRepository contentStyleRepository;
     private final PreferTopicRepository preferTopicRepository;
+    private final BusinessManRepository businessManRepository;
 
     @Override
     @Transactional
@@ -304,21 +304,27 @@ public class InfluencerServiceImpl implements InfluencerService {
 
         User user = influencer.getUser();
         Activity activity = influencer.getActivity();
+        String avgText = influencer.formatAverageScore(influencer.getTotalScore(), influencer.getReviewCount());
 
-        //소수점 2자리까지 처리한다.
-        BigDecimal avgScore = BigDecimal.ZERO;
-        if (influencer.getReviewCount() > 0) {
-            avgScore = BigDecimal.valueOf(influencer.getTotalScore())
-                    .divide(BigDecimal.valueOf(influencer.getReviewCount()), 2, RoundingMode.HALF_UP);
-        }
-        String avgText = String.format("%.2f", avgScore);
+        Pageable topFour = PageRequest.of(0, 4);
+        List<BusinessMan> topbusinessMans = businessManRepository.findTopBusinessManAverageScoreDesc(topFour);
+        List<InfluencerHomeRes.BusinessManSummaryRes> businessMans = topbusinessMans.stream()
+                .map(businessMan -> new InfluencerHomeRes.BusinessManSummaryRes(
+                        businessMan.getUser().getUserId(),
+                        businessMan.getUser().getNickname(),
+                        businessMan.getUser().getProfileImage(),
+                        businessMan.formatAverageScore(businessMan.getTotalScore(), businessMan.getReviewCount()),
+                        businessMan.getReviewCount()
+                ))
+                .toList();
 
         return new InfluencerHomeRes(
                 user.getProfileImage(),
                 user.getNickname(),
                 activity.getActivityName(),
                 avgText,
-                influencer.getReviewCount()
+                influencer.getReviewCount(),
+                businessMans
         );
     }
 }
