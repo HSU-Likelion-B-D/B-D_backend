@@ -3,6 +3,8 @@ package com.likelion.bd.domain.businessman.service;
 import com.likelion.bd.domain.businessman.entity.*;
 import com.likelion.bd.domain.businessman.repository.*;
 import com.likelion.bd.domain.businessman.web.dto.*;
+import com.likelion.bd.domain.influencer.entity.Influencer;
+import com.likelion.bd.domain.influencer.repository.InfluencerRepository;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
@@ -11,6 +13,8 @@ import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponse
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import com.likelion.bd.global.response.code.businessMan.WorkPlaceErrorReponseCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +34,7 @@ public class BusinessManServiceImpl implements BusinessManService {
     private final MoodRepository moodRepository;
     private final PromotionRepository promotionRepository;
     private final BusinessManRepository businessManRepository;
+    private final InfluencerRepository influencerRepository;
 
     @Transactional
     @Override
@@ -98,6 +103,8 @@ public class BusinessManServiceImpl implements BusinessManService {
         BusinessMan businessMan = BusinessMan.builder()
                 .user(user)
                 .workPlace(workPlace)
+                .totalScore(0.0)
+                .reviewCount(0L)
                 .build();
         businessManRepository.save(businessMan);
 
@@ -238,23 +245,27 @@ public class BusinessManServiceImpl implements BusinessManService {
                 .orElseThrow(()->new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
 
         User user = businessMan.getUser();
-
         WorkPlace workPlace = businessMan.getWorkPlace();
+        String avgText = businessMan.formatAverageScore(businessMan.getTotalScore(), businessMan.getReviewCount());
 
-        //소수점 2자리까지 처리한다.
-        BigDecimal avgScore = BigDecimal.ZERO;
-        if (businessMan.getReviewCount() > 0) {
-            avgScore = BigDecimal.valueOf(businessMan.getTotalScore())
-                    .divide(BigDecimal.valueOf(businessMan.getReviewCount()), 2, RoundingMode.HALF_UP);
-        }
-        String avgText = String.format("%.2f", avgScore);
+        Pageable topFour = PageRequest.of(0, 4);
+        List<Influencer> topInfluencers = influencerRepository.findTopInfluencerFollowerCountDesc(topFour);
+        List<BusinessHomeRes.InfluencerSummaryRes> Influencers = topInfluencers.stream()
+                .map(Influencer -> new BusinessHomeRes.InfluencerSummaryRes(
+                        Influencer.getUser().getUserId(),
+                        Influencer.getUser().getNickname(),
+                        Influencer.getUser().getProfileImage(),
+                        Influencer.getActivity().formatFollowers()
+                ))
+                .toList();
 
         return new BusinessHomeRes(
                 user.getProfileImage(),
                 user.getNickname(),
                 workPlace.getName(),
                 avgText,
-                businessMan.getReviewCount()
+                businessMan.getReviewCount(),
+                Influencers
         );
     }
 }
