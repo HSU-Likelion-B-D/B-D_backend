@@ -34,6 +34,8 @@ public class MatchController {
     @GetMapping("/influencer/me/recommendations")
     public ResponseEntity<SuccessResponse<?>> getTop5BusinessMan(@AuthenticationPrincipal UserPrincipal userPrincipal){
         List<RecommendBusinessManRes> businessManRecommendList = matchService.top5ForInfluencer(userPrincipal.getId());
-        return null;
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.ok(businessManRecommendList));
     }
 }

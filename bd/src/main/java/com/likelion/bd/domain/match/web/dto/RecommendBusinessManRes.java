@@ -9,7 +9,7 @@ public record RecommendBusinessManRes(
         Long reviewCount, //리뷰 수
         List<String> categoryList, //가게 업종
         List<String> moodList, //가게 분위기
-        Long minBudget, //최소 지급 금액
+        String minBudget, //최소 지급 금액
         String region, //지역
         int finalScore
 ) {

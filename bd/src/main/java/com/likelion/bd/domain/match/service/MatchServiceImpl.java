@@ -21,6 +21,7 @@ import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponse
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -38,6 +39,7 @@ public class MatchServiceImpl implements MatchService {
     private final MatchProperties props;
     private final CategoryRepository categoryRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public List<RecommendInfluencerRes> top5ForBusinessMan(Long userId) {
         User user = userRepository.findById(userId).
@@ -166,6 +168,7 @@ public class MatchServiceImpl implements MatchService {
 
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<RecommendBusinessManRes> top5ForInfluencer(Long userId) {
         User user = userRepository.findById(userId)
