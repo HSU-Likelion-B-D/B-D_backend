@@ -186,7 +186,7 @@ public class MatchServiceImpl implements MatchService {
         }
 
         //후보 자영업자 필터링(인플루언서의 선호 업종과 하나라도 겹치는 자영업자 조회)
-        List<Category> categoryList = categoryRepository.findAllByName(new ArrayList<>(influencerTopics));
+        List<Category> categoryList = categoryRepository.findAllByNameIn(new ArrayList<>(influencerTopics));
         if (categoryList.isEmpty()) {
             return Collections.emptyList();
         }
