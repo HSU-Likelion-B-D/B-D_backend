@@ -8,6 +8,7 @@ import com.likelion.bd.domain.user.web.dto.*;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.external.s3.S3Service;
 import com.likelion.bd.global.jwt.JwtTokenProvider;
+import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.mail.MailService;
 import com.likelion.bd.global.response.code.ErrorResponseCode;
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
@@ -103,7 +104,24 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtTokenProvider.createToken(user);
 
-        return new UserSigninRes(user.getRole(), token);
+        return new UserSigninRes(
+                user.getNickname(),
+                user.getProfileImage(),
+                user.getRole(),
+                token
+        );
+    }
+
+    @Override
+    public UserFormRes getUser(UserPrincipal userPrincipal) {
+        User user = userRepository.findByUserId(userPrincipal.getId())
+                .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
+
+        return new UserFormRes(
+                user.getNickname(),
+                user.getProfileImage(),
+                user.getIntroduction()
+        );
     }
 
     // 회원 정보 수정
