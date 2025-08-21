@@ -34,6 +34,7 @@ public class CampaignServiceImpl implements CampaignService {
     private final CampaignRepository campaignRepository;
     private final UserRepository userRepository;
     private final ProposalRepository proposalRepository;
+    private final PaymentService paymentService;
 
     @Override
     @Transactional
@@ -124,5 +125,9 @@ public class CampaignServiceImpl implements CampaignService {
         }
 
         campaign.updateState(campaignResponseReq.getResponse());
+
+        if (campaignResponseReq.getResponse().equals("yes")) {
+            paymentService.createPayment(campaign); // 기본 10
+        }
     }
 }
