@@ -60,6 +60,7 @@ public class SecurityConfig {
                         // 자영업자
                         .requestMatchers(HttpMethod.POST,"/api/businessman/workplaces").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/businessman/workplaces").hasRole("BUSINESS")
+                        .requestMatchers(HttpMethod.GET, "/api/businessman/workplaces").hasRole("BUSINESS")
                         .requestMatchers("/api/businessman/mypage").hasRole("BUSINESS")
                         .requestMatchers("/api/businessman/home").hasRole("BUSINESS")
                         // 인플루언서
