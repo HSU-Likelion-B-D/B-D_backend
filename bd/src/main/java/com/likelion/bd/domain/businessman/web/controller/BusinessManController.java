@@ -37,6 +37,15 @@ public class BusinessManController {
                 .body(SuccessResponse.ok(workPlaceUpdateRes));
     }
 
+    @GetMapping("/workplaces")
+    public ResponseEntity<SuccessResponse<?>> updateInit
+            (@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        WorkPlaceUpdateInitRes workPlaceUpdateInitRes = businessManService.updateWorkPlaceInit(userPrincipal);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.ok(workPlaceUpdateInitRes));
+    }
+
     @GetMapping("/mypage")
     public ResponseEntity<SuccessResponse<?>> myPage(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         BusinessMyPageRes businessMyPageRes = businessManService.mypage(userPrincipal);

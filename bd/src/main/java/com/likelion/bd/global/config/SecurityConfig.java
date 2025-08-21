@@ -60,6 +60,9 @@ public class SecurityConfig {
                         // 자영업자
                         .requestMatchers(HttpMethod.POST,"/api/businessman/workplaces").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/businessman/workplaces").hasRole("BUSINESS")
+                        .requestMatchers(HttpMethod.GET, "/api/businessman/workplaces").hasRole("BUSINESS")
+                        .requestMatchers("/api/businessman/mypage").hasRole("BUSINESS")
+                        .requestMatchers("/api/businessman/home").hasRole("BUSINESS")
                         // 인플루언서
                         .requestMatchers(HttpMethod.POST,"/api/influencer/activities").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/influencer/activities").hasRole("INFLUENCER")
@@ -74,6 +77,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/review/write").authenticated()
                         //추천
                         .requestMatchers("/api/businessman/me/recommendations").hasRole("BUSINESS")
+                        .requestMatchers("/api/influencer/me/recommendations").hasRole("INFLUENCER")
                         .anyRequest().authenticated()  // 그 외 요청은 전부 토큰 필요
                 );
 

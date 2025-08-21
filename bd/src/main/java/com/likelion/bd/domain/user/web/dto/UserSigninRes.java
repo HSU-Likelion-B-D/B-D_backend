@@ -6,7 +6,9 @@ public record UserSigninRes(
         String nickname,
         String imgUrl,
         UserRoleType userRoleType,
-        String token
+        String token,
+        String nickName,
+        String imgUrl
 ) {
 
 }
