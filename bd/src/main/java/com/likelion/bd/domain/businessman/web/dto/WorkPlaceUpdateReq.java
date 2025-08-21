@@ -10,13 +10,13 @@ import java.util.List;
 @Setter
 @Builder
 public class WorkPlaceUpdateReq {
-    private String name;
+    private String name; //가게이름
     private String address;
     private String detailAddress;
     private String openTime; // "HH:mm"
     private String closeTime;
-    private Long minBudget;
-    private Long maxBudget;
+    private String minBudget;
+    private String maxBudget;
     private Boolean isOnline;
     private List<Long> categoryIds;
     private List<Long> moodIds;

@@ -42,10 +42,10 @@ public class WorkPlace extends BaseEntity {
     private Boolean isOnline; //사업장 온라인스토어 유무
 
     @Column(name = "MIN_BUDGET", nullable = false)
-    private Long minBudget;
+    private String minBudget;
 
     @Column(name = "MAX_BUDGET", nullable = false)
-    private Long maxBudget;
+    private String maxBudget;
 
     @Builder.Default
     @OneToMany(mappedBy = "workPlace", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -60,7 +60,7 @@ public class WorkPlace extends BaseEntity {
     private List<WorkPlacePromotion> promotionList = new ArrayList<>();
 
     public void updateBasicInfo(String name, String address, String detailAddress,
-                                LocalTime openTime, LocalTime closeTime, Long minBudget, Long maxBudget,Boolean isOnline){
+                                LocalTime openTime, LocalTime closeTime, String minBudget, String maxBudget,Boolean isOnline){
         this.name = name;
         this.address = address;
         this.detailAddress = detailAddress;
