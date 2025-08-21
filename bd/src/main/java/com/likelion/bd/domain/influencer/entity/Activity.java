@@ -90,6 +90,30 @@ public class Activity extends BaseEntity {
 
     // -------------------------------------------------------------------------------------
 
+    public List<String> getPlatforms() {
+        return this.getActivityPlatformList().stream()
+                .map(ap -> ap.getPlatform().getName())
+                .toList();
+    }
+
+    public List<String> getContentTopics() {
+        return this.getActivityContentTopicList().stream()
+                .map(act -> act.getContentTopic().getName())
+                .toList();
+    }
+
+    public List<String> getContentStyles() {
+        return this.getActivityContentStyleList().stream()
+                .map(act -> act.getContentStyle().getName())
+                .toList();
+    }
+
+    public List<String> getPreferTopics() {
+        return this.getActivityPreferTopicList().stream()
+                .map(apt -> apt.getPreferTopic().getName())
+                .toList();
+    }
+
     public void updateBasicInfo(
             String activityName,
             String snsUrl,

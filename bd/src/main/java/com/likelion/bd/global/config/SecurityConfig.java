@@ -62,6 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT,"/api/businessman/workplaces").hasRole("BUSINESS")
                         // 인플루언서
                         .requestMatchers(HttpMethod.POST,"/api/influencer/activities").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/influencer/activities").hasRole("INFLUENCER")
                         .requestMatchers(HttpMethod.PUT,"/api/influencer/activities").hasRole("INFLUENCER")
                         .requestMatchers(HttpMethod.GET,"/api/influencer/home").hasRole("INFLUENCER")
                         .requestMatchers(HttpMethod.GET,"/api/influencer/mypage").hasRole("INFLUENCER")

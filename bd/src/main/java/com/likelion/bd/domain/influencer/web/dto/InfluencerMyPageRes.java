@@ -4,8 +4,9 @@ import java.util.List;
 
 public record InfluencerMyPageRes(
         String imgUrl,                  // 사진
-        String activityName,            // 활동명
         String nickName,                // 닉네임
+        String introduction,            // 자기 소개 글
+        String activityName,            // 활동명
         String follower,                // 팔로워 수
         String avgScore,                // 평점
         Long reviewCount,               // 평가 받은 횟수

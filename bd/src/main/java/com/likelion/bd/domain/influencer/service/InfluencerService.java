@@ -7,6 +7,8 @@ public interface InfluencerService {
 
     ActivityCreateRes createActivity(ActivityCreateReq activityCreateReq);
 
+    ActivityFormRes getActcivity(UserPrincipal userPrincipal);
+
     void updateActivity(ActivityUpdateReq activityUpdateReq, Long userId);
 
     InfluencerMyPageRes myPage(Long userId);

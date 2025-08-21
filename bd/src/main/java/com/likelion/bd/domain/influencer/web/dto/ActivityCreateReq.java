@@ -24,7 +24,7 @@ public class ActivityCreateReq {
     private String snsUrl; // sns 주소
 
     @NotNull(message = "팔로워 수는 필수 입력 값입니다.")
-    Long followerCount;
+    private Long followerCount;
 
     @NotNull(message = "주 업로드 횟수를 선택해주세요.")
     @Min(value = 1, message = "주 업로드 횟수는 1에서 5 사이의 값이어야 합니다.")

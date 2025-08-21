@@ -1,6 +1,7 @@
 package com.likelion.bd.domain.user.service;
 
 import com.likelion.bd.domain.user.web.dto.*;
+import com.likelion.bd.global.jwt.UserPrincipal;
 
 public interface UserService {
 
@@ -18,6 +19,9 @@ public interface UserService {
 
     // 로그인
     UserSigninRes signin(UserSigninReq userSigninReq);
+
+    // 회원 정보 수정 폼
+    UserFormRes getUser(UserPrincipal userPrincipal);
 
     // 회원 정보 수정
     void updateUser(UserUpdateReq userUpdateReq, Long userId);

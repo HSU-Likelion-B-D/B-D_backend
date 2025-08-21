@@ -84,6 +84,18 @@ public class UserController {
                 .body(SuccessResponse.ok(userSigninRes));
     }
 
+    // 회언 정보 수정 폼
+    @GetMapping("/profile")
+    public ResponseEntity<SuccessResponse<?>> getProfile(
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        UserFormRes userFormRes = userService.getUser(userPrincipal);
+
+        return  ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.ok(userFormRes));
+    }
+
     // 회원 정보 수정
     @PutMapping("/update")
     public ResponseEntity<SuccessResponse<?>> update(
