@@ -284,6 +284,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         return new InfluencerMyPageRes(
                 user.getProfileImage(),
                 activity.getActivityName(),
+                user.getIntroduction(),
                 user.getName(),
                 formattedFollowers,
                 avgText,
