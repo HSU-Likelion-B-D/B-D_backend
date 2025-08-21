@@ -4,7 +4,9 @@ import com.likelion.bd.domain.user.entity.UserRoleType;
 
 public record UserSigninRes(
         UserRoleType userRoleType,
-        String token
+        String token,
+        String nickName,
+        String imgUrl
 ) {
 
 }
