@@ -34,7 +34,7 @@ public class Proposal extends BaseEntity {
     private String title; // 제안서 제목
 
     @Column(name = "OFFER_BUDGET")
-    private Long offerBudget; // 제시 금액
+    private String offerBudget; // 제시 금액
 
     @Column(name = "START_DATE", nullable = false)
     private LocalDate startDate; // 시작 날짜
