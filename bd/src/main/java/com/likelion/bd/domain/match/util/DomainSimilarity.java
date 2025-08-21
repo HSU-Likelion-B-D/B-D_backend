@@ -51,6 +51,9 @@ public class DomainSimilarity {
     private static final Map<String, Map<String, Double>> MOOD_STYLE = new HashMap<>();
     private static final Map<String, Map<String, Double>> PROMO_PLATFORM = new HashMap<>();
 
+    //역방향 맵 추가
+    private static final Map<String, Map<String, Double>> STYLE_MOOD = new HashMap<>();
+    private static final Map<String, Map<String, Double>> PLATFORM_PROMO = new HashMap<>();
     static {
         // 무드 → 스타일 가중치
         put(MOOD_STYLE, "감성적인", mapOf("예술적/감각적", 0.90, "감정 중심형", 0.80, "일상 공유형", 0.60));
@@ -73,6 +76,9 @@ public class DomainSimilarity {
         put(PROMO_PLATFORM, "숏폼", mapOf("릴스", 0.95, "쇼츠", 0.95, "틱톡", 0.95, "인스타그램", 0.60, "유튜브", 0.60));
         put(PROMO_PLATFORM, "vlog", mapOf("유튜브", 0.80, "인스타그램", 0.60, "틱톡", 0.50));
         put(PROMO_PLATFORM, "기타", mapOf("기타", 0.60));
+
+        reverseMap(MOOD_STYLE, STYLE_MOOD);
+        reverseMap(PROMO_PLATFORM, PLATFORM_PROMO);
     }
 
     private static Map<String, Double> mapOf(Object... kv) {
@@ -87,6 +93,17 @@ public class DomainSimilarity {
 
     private static void put(Map<String, Map<String, Double>> root, String k, Map<String, Double> v) {
         root.put(norm(k), v);
+    }
+
+    private static void reverseMap(Map<String, Map<String, Double>> source, Map<String, Map<String,Double>> target){
+        for(Map.Entry<String, Map<String, Double>> entry : source.entrySet()){
+            String sourceKey = entry.getKey();
+            for(Map.Entry<String,Double> innerEntry : entry.getValue().entrySet()){
+                String targetKey = innerEntry.getKey();
+                Double value = innerEntry.getValue();
+                target.computeIfAbsent(targetKey, k-> new HashMap<>()).put(sourceKey,value);
+            }
+        }
     }
 
     /* 무드↔스타일 유사도(sim∈[0,1]). 맵에 없으면 동일어=1.0, 그 외=0.0 */
