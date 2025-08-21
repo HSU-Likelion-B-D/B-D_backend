@@ -9,4 +9,6 @@ public interface BusinessManService {
     BusinessMyPageRes mypage(UserPrincipal userPrincipal);
 
     BusinessHomeRes home(UserPrincipal userPrincipal);
+
+    WorkPlaceUpdateInitRes updateWorkPlaceInit(UserPrincipal userPrincipal);
 }

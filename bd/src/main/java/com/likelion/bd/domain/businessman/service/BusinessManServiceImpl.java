@@ -113,6 +113,26 @@ public class BusinessManServiceImpl implements BusinessManService {
         );
     }
 
+    @Override
+    public WorkPlaceUpdateInitRes updateWorkPlaceInit(UserPrincipal userPrincipal){
+        BusinessMan businessMan = businessManRepository.findByUserUserId(userPrincipal.getId())
+                .orElseThrow(()->new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
+
+        User user = businessMan.getUser();
+        WorkPlace workPlace = businessMan.getWorkPlace();
+
+        return new WorkPlaceUpdateInitRes(
+                workPlace.getName(),
+                user.getIntroduction(),
+                workPlace.getAddress(),
+                workPlace.getDetailAddress(),
+                workPlace.getOpenTime().toString(),
+                workPlace.getCloseTime().toString(),
+                workPlace.getMinBudget().toString(),
+                workPlace.getMaxBudget().toString()
+        );
+    }
+
     @Transactional
     @Override
     public WorkPlaceUpdateRes updateWorkPlace(WorkPlaceUpdateReq workPlaceUpdateReq, UserPrincipal userPrincipal) {
