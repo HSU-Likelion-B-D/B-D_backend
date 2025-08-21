@@ -56,8 +56,8 @@ public class InfluencerServiceImpl implements InfluencerService {
                 .uploadFrequency(UploadFrequency.fromValue(activityCreateReq.getUploadFrequency()))
                 .bankName(activityCreateReq.getBankName())
                 .accountNumber(activityCreateReq.getAccountNumber())
-                .minAmount(activityCreateReq.getMinAmount())
-                .maxAmount(activityCreateReq.getMaxAmount())
+                .minBudget(activityCreateReq.getMinBudget())
+                .maxBudget(activityCreateReq.getMaxBudget())
                 .build();
         activityRepository.save(activity);
 
@@ -148,8 +148,8 @@ public class InfluencerServiceImpl implements InfluencerService {
         UploadFrequency uploadFrequency = activity.getUploadFrequency();
         String bankName = activity.getBankName();
         String accountNumber = activity.getAccountNumber();
-        Long minAmount = activity.getMinAmount();
-        Long maxAmount = activity.getMaxAmount();
+        String minBudget = activity.getMinBudget();
+        String maxBudget = activity.getMaxBudget();
 
         if (activityUpdateReq.getActivityName() != null && !activityUpdateReq.getActivityName().isEmpty()) {
             activityName = activityUpdateReq.getActivityName();
@@ -169,16 +169,16 @@ public class InfluencerServiceImpl implements InfluencerService {
         if  (activityUpdateReq.getAccountNumber() != null && !activityUpdateReq.getAccountNumber().isEmpty()) {
             accountNumber = activityUpdateReq.getAccountNumber();
         }
-        if (activityUpdateReq.getMinAmount() != null) {
-            minAmount = activityUpdateReq.getMinAmount();
+        if (activityUpdateReq.getMinBudget() != null) {
+            minBudget = activityUpdateReq.getMinBudget();
         }
-        if (activityUpdateReq.getMaxAmount() != null) {
-            maxAmount = activityUpdateReq.getMaxAmount();
+        if (activityUpdateReq.getMaxBudget() != null) {
+            maxBudget = activityUpdateReq.getMaxBudget();
         }
 
         activity.updateBasicInfo(
                 activityName, snsUrl, followerCount, uploadFrequency,
-                bankName, accountNumber, minAmount, maxAmount);
+                bankName, accountNumber, minBudget, maxBudget);
 
         // -------------------------------------------------------------------------------------------------------
 
@@ -289,7 +289,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 avgText,
                 influencer.getReviewCount(),
                 activity.getSnsUrl(),
-                activity.getMinAmount(),
+                activity.getMinBudget(),
                 platforms,
                 contentTopics,
                 contentStyles,

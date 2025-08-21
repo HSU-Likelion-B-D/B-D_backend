@@ -10,7 +10,7 @@ public record InfluencerMyPageRes(
         String avgScore,                // 평점
         Long reviewCount,               // 평가 받은 횟수
         String snsUrl,                  // SNS 링크
-        Long minAmount,                 // 희망하는 최소 금액
+        String minBudget,                 // 희망하는 최소 금액
         List<String> platforms,        // 플랫폼 목록
         List<String> contentTopics,    // 컨텐츠 분야 목록
         List<String> contentStyles,    // 컨텐츠 스타일 목록

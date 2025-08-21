@@ -41,11 +41,11 @@ public class Activity extends BaseEntity {
     @Column(name = "ACCOUNT_NUMBER", nullable = false)
     private String accountNumber; // 계좌번호
 
-    @Column(name = "MIN_AMOUNT", nullable = false)
-    private Long minAmount; // 최소 희망 금액
+    @Column(name = "MIN_BUDGET", nullable = false)
+    private String minBudget; // 최소 희망 금액
 
-    @Column(name = "MAX_AMOUNT", nullable = false)
-    private Long maxAmount; // 최대 희망 금액
+    @Column(name = "MAX_BUDGET", nullable = false)
+    private String maxBudget; // 최대 희망 금액
 
     // -------------------------------------------------------------------------------------
 
@@ -97,8 +97,8 @@ public class Activity extends BaseEntity {
             UploadFrequency uploadFrequency,
             String bankName,
             String accountNumber,
-            Long minAmount,
-            Long maxAmount
+            String minAmount,
+            String maxAmount
     ) {
         this.activityName = activityName;
         this.snsUrl = snsUrl;
@@ -106,8 +106,8 @@ public class Activity extends BaseEntity {
         this.uploadFrequency = uploadFrequency;
         this.bankName = bankName;
         this.accountNumber = accountNumber;
-        this.minAmount = minAmount;
-        this.maxAmount = maxAmount;
+        this.minBudget = minAmount;
+        this.maxBudget = maxAmount;
     }
 
     public String formatFollowers() {
