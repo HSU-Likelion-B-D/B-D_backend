@@ -30,6 +30,18 @@ public class InfluencerController {
                 .body(SuccessResponse.ok(activityCreateRes));
     }
 
+    @GetMapping("/activities") // 인플루언서 활동 수정할 때, 초기 정보
+    public ResponseEntity<SuccessResponse<?>> getActivity(
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+
+        ActivityFormRes activityFormRes = influencerService.getActcivity(userPrincipal);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.ok(activityFormRes));
+    }
+
     @PutMapping("/activities") // 인플루언서 활동 수정
     public ResponseEntity<SuccessResponse<?>> updateActivity(
             @RequestBody @Valid ActivityUpdateReq activityUpdateReq,

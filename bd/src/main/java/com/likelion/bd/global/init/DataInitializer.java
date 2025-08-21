@@ -52,7 +52,7 @@ public class DataInitializer implements ApplicationRunner {
         // 콘텐츠 분야 데이터 초기화
         if (contentTopicRepository.count() == 0) {
             List<String> topicNames = Arrays.asList(
-                    "음식/카페", "뷰티", "패션", "헬스/피트니스", "키즈", "교육/정보",
+                    "음식/카페", "뷰티", "패션", "운동", "키즈", "교육/정보",
                     "VLOG", "게임/IT", "반려동물", "영화/드라마", "음악/댄스", "기타"
             );
             topicNames.forEach(name -> {
@@ -64,8 +64,8 @@ public class DataInitializer implements ApplicationRunner {
         // 콘텐츠 스타일 데이터 초기화
         if (contentStyleRepository.count() == 0) {
             List<String> styleNames = Arrays.asList(
-                    "정보전달형", "유머/유쾌 중심", "감정 중심형", "전문가형",
-                    "예술적/감각적", "도전/이벤트형", "트렌디한", "일상 공유형", "기타"
+                    "정보전달", "유머/유쾌 중심", "감정중심", "일상공유",
+                    "예술/감각적", "도전/이벤트형", "트렌디한", "기타"
             );
             styleNames.forEach(name -> {
                 ContentStyle style = ContentStyle.builder().name(name).build();

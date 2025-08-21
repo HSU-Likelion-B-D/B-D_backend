@@ -8,6 +8,7 @@ import com.likelion.bd.domain.influencer.web.dto.*;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
+import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.code.Influencer.ActivityErrorResponseCode;
 import com.likelion.bd.global.response.code.Influencer.InfluencerErrorResponseCode;
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
@@ -56,8 +57,8 @@ public class InfluencerServiceImpl implements InfluencerService {
                 .uploadFrequency(UploadFrequency.fromValue(activityCreateReq.getUploadFrequency()))
                 .bankName(activityCreateReq.getBankName())
                 .accountNumber(activityCreateReq.getAccountNumber())
-                .minAmount(activityCreateReq.getMinAmount())
-                .maxAmount(activityCreateReq.getMaxAmount())
+                .minBudget(activityCreateReq.getMinBudget())
+                .maxBudget(activityCreateReq.getMaxBudget())
                 .build();
         activityRepository.save(activity);
 
@@ -130,6 +131,34 @@ public class InfluencerServiceImpl implements InfluencerService {
     }
 
     @Override
+    public ActivityFormRes getActcivity(UserPrincipal userPrincipal) {
+        Influencer influencer = influencerRepository.findByUserUserId(userPrincipal.getId())
+                .orElseThrow(() -> new CustomException(InfluencerErrorResponseCode.INFLUENCER_NOT_FOUND_404));
+
+        Activity activity = influencer.getActivity();
+
+        List<String> platforms = activity.getPlatforms();
+        List<String> contentTopics = activity.getContentTopics();
+        List<String> contentStyles = activity.getContentStyles();
+        List<String> preferTopics = activity.getPreferTopics();
+
+        return new ActivityFormRes(
+                influencer.getInfluencerId(),
+                activity.getActivityName(),
+                activity.getFollowerCount(),
+                activity.getUploadFrequency().getValue(),
+                activity.getBankName(),
+                activity.getAccountNumber(),
+                activity.getMinBudget(),
+                activity.getMaxBudget(),
+                platforms,
+                contentTopics,
+                contentStyles,
+                preferTopics
+        );
+    }
+
+    @Override
     @Transactional
     public void updateActivity(
             ActivityUpdateReq activityUpdateReq,
@@ -148,8 +177,8 @@ public class InfluencerServiceImpl implements InfluencerService {
         UploadFrequency uploadFrequency = activity.getUploadFrequency();
         String bankName = activity.getBankName();
         String accountNumber = activity.getAccountNumber();
-        Long minAmount = activity.getMinAmount();
-        Long maxAmount = activity.getMaxAmount();
+        String minBudget = activity.getMinBudget();
+        String maxBudget = activity.getMaxBudget();
 
         if (activityUpdateReq.getActivityName() != null && !activityUpdateReq.getActivityName().isEmpty()) {
             activityName = activityUpdateReq.getActivityName();
@@ -169,16 +198,16 @@ public class InfluencerServiceImpl implements InfluencerService {
         if  (activityUpdateReq.getAccountNumber() != null && !activityUpdateReq.getAccountNumber().isEmpty()) {
             accountNumber = activityUpdateReq.getAccountNumber();
         }
-        if (activityUpdateReq.getMinAmount() != null) {
-            minAmount = activityUpdateReq.getMinAmount();
+        if (activityUpdateReq.getMinBudget() != null) {
+            minBudget = activityUpdateReq.getMinBudget();
         }
-        if (activityUpdateReq.getMaxAmount() != null) {
-            maxAmount = activityUpdateReq.getMaxAmount();
+        if (activityUpdateReq.getMaxBudget() != null) {
+            maxBudget = activityUpdateReq.getMaxBudget();
         }
 
         activity.updateBasicInfo(
                 activityName, snsUrl, followerCount, uploadFrequency,
-                bankName, accountNumber, minAmount, maxAmount);
+                bankName, accountNumber, minBudget, maxBudget);
 
         // -------------------------------------------------------------------------------------------------------
 
@@ -257,18 +286,10 @@ public class InfluencerServiceImpl implements InfluencerService {
         User user = influencer.getUser();
         Activity activity = influencer.getActivity();
 
-        List<String> platforms = activity.getActivityPlatformList().stream()
-                .map(ap -> ap.getPlatform().getName())
-                .toList();
-        List<String> contentTopics = activity.getActivityContentTopicList().stream()
-                .map(act -> act.getContentTopic().getName())
-                .toList();
-        List<String> contentStyles = activity.getActivityContentStyleList().stream()
-                .map(acs -> acs.getContentStyle().getName())
-                .toList();
-        List<String> preferTopics = activity.getActivityPreferTopicList().stream()
-                .map(apt -> apt.getPreferTopic().getName())
-                .toList();
+        List<String> platforms = activity.getPlatforms();
+        List<String> contentTopics = activity.getContentTopics();
+        List<String> contentStyles = activity.getContentStyles();
+        List<String> preferTopics = activity.getPreferTopics();
 
         // 382K+, 3M+ ...
         String formattedFollowers = activity.formatFollowers();
@@ -283,14 +304,14 @@ public class InfluencerServiceImpl implements InfluencerService {
 
         return new InfluencerMyPageRes(
                 user.getProfileImage(),
-                activity.getActivityName(),
+                user.getNickname(),
                 user.getIntroduction(),
-                user.getName(),
+                activity.getActivityName(),
                 formattedFollowers,
                 avgText,
                 influencer.getReviewCount(),
                 activity.getSnsUrl(),
-                activity.getMinAmount(),
+                activity.getMinBudget(),
                 platforms,
                 contentTopics,
                 contentStyles,

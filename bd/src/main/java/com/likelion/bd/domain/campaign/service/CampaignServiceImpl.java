@@ -34,6 +34,7 @@ public class CampaignServiceImpl implements CampaignService {
     private final CampaignRepository campaignRepository;
     private final UserRepository userRepository;
     private final ProposalRepository proposalRepository;
+    private final PaymentService paymentService;
 
     @Override
     @Transactional
@@ -93,7 +94,7 @@ public class CampaignServiceImpl implements CampaignService {
             Proposal p = c.getProposal(); // fetch 되어 있음(@EntityGraph)
 
             String title = (p != null) ? p.getTitle() : null;
-            Long offerBudget  = (p != null) ? p.getOfferBudget() : null;
+            String offerBudget  = (p != null) ? p.getOfferBudget() : null;
             LocalDate startDate = (p != null) ? p.getStartDate() : null;
             LocalDate endDate = (p != null) ? p.getEndDate() : null;
 
@@ -124,5 +125,9 @@ public class CampaignServiceImpl implements CampaignService {
         }
 
         campaign.updateState(campaignResponseReq.getResponse());
+
+        if (campaignResponseReq.getResponse().equals("yes")) {
+            paymentService.createPayment(campaign); // 기본 10
+        }
     }
 }
