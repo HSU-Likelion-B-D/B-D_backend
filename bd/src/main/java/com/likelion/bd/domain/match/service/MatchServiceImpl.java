@@ -288,7 +288,7 @@ public class MatchServiceImpl implements MatchService {
                 influencer.getReviewCount(),
                 platformList,
                 activity.getFollowerCount(),
-                activity.getMinAmount(),
+                activity.getMinBudget(),
                 contentTopicList,
                 finalScore
         );

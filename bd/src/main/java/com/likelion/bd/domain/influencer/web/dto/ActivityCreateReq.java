@@ -24,7 +24,7 @@ public class ActivityCreateReq {
     private String snsUrl; // sns 주소
 
     @NotNull(message = "팔로워 수는 필수 입력 값입니다.")
-    Long followerCount;
+    private Long followerCount;
 
     @NotNull(message = "주 업로드 횟수를 선택해주세요.")
     @Min(value = 1, message = "주 업로드 횟수는 1에서 5 사이의 값이어야 합니다.")
@@ -37,11 +37,11 @@ public class ActivityCreateReq {
     @NotBlank(message = "계좌번호는 필수 입력 항목입니다.")
     private String accountNumber; // 계좌 번호
 
-    @PositiveOrZero(message = "최소 희망 금액은 0 이상이어야 합니다.")
-    private Long minAmount; // 최소 희망 금액
+    @NotBlank(message = "최소 희망 금액은 필수 입력 항목입니다.")
+    private String minBudget; // 최소 희망 금액
 
-    @PositiveOrZero(message = "최대 희망 금액은 0 이상이어야 합니다.")
-    private Long maxAmount; // 최대 희망 금액
+    @NotBlank(message = "최대 희망 금액은 필수 입력 항목입니다.")
+    private String maxBudget; // 최대 희망 금액
 
     @NotEmpty(message = "플랫폼을 하나 이상 선택해주세요.")
     private List<Long> platformIds; // 활동 플랫폼 카테고리

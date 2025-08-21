@@ -1,7 +1,6 @@
 package com.likelion.bd.domain.campaign.web.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,8 +11,8 @@ public class ProposalWriteReq {
     @NotBlank(message = "제목은 필수 입력 값 입니다.")
     private String title; // 제안서 제목
 
-    @NotNull(message = "제시 금액 필수 입력 값 입니다.")
-    private Long offerBudget; // 제시 금액
+    @NotBlank(message = "제시 금액 필수 입력 값 입니다.")
+    private String offerBudget; // 제시 금액
 
     @NotBlank(message = "시작 날짜는 필수 입력 값 입니다.")
     private String startDate; // 시작 날짜

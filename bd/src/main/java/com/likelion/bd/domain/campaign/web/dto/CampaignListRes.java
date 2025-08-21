@@ -6,7 +6,7 @@ public record CampaignListRes(
         Long campaignId,
         String imgUrl,
         String title,
-        Long offerBudget,
+        String offerBudget,
         LocalDate startDate,
         LocalDate endDate,
         String status
