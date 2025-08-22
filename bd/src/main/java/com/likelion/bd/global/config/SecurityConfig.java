@@ -73,6 +73,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/proposal/write").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/proposal/write").authenticated()
                         .requestMatchers("/api/campaigns").hasAnyRole("BUSINESS","INFLUENCER")
+                        // 결제 및 정산
+                        .requestMatchers("/api/payments").hasAnyRole("BUSINESS","INFLUENCER")
                         // 리뷰
                         .requestMatchers(HttpMethod.POST, "/api/review/write").authenticated()
                         //추천
