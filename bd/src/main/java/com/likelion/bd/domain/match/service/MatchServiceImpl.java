@@ -184,28 +184,28 @@ public class MatchServiceImpl implements MatchService {
         Set<String> influencerStyles = influencerStyleNames(influencer);
         Set<String> influencerPlatforms = influencerPlatformNames(influencer);
 
+        //선호 주제가 하나도 없다면 추천의 의미가 없으므로 빈 리스트 반환한다.
         if (influencerTopics.isEmpty()) {
-            return Collections.emptyList();
+            return Collections.emptyList(); // = List.of()와 의미 동일(불변 빈 리스트)
         }
 
-        //후보 자영업자 필터링(인플루언서의 선호 업종과 하나라도 겹치는 자영업자 조회)
-        List<Category> categoryList = categoryRepository.findAllByNameIn(new ArrayList<>(influencerTopics));
-        if (categoryList.isEmpty()) {
-            return Collections.emptyList();
-        }
+        List<BusinessMan> businessManList = businessManMatchRepository.findBusinessManByCategoryNames(influencerTopics);
 
-        List<BusinessMan> businessManList = businessManMatchRepository.findBusinessManInCategoriesWithDetails(categoryList);
         if (businessManList.isEmpty()) {
             return Collections.emptyList();
         }
 
-        //전역 파라미터 설정 (자영업자 기준)
-        //리뷰 중앙값, 베이지안 평균을 위한 사전 평균 계산
+        // 3) 베이지안 평균용 전역 파라미터(m, C) 계산 — 기존 구현과 동일 로직
+        //    m: 리뷰 중앙값 기반 사전 리뷰 수(클램프)
         List<Long> reviewCounts = businessManList.stream().map(this::reviewCountOf).toList();
         long medianRc = StatsUtils.median(reviewCounts);
-        double m = StatsUtils.clamp((medianRc <= 0 ? (long) props.getMFallback() : medianRc),
-                props.getMClampMin(), props.getMClampMax());
+        double m = StatsUtils.clamp(
+                (medianRc <= 0 ? (long) props.getMFallback() : medianRc),
+                props.getMClampMin(),
+                props.getMClampMax()
+        );
 
+        //    C: 사전평균(전역 평균 평점) — 리뷰수/총점 합계로부터 계산
         long sumReviews = 0L;
         double sumScores = 0.0;
         for (BusinessMan bm : businessManList) {
@@ -216,8 +216,7 @@ public class MatchServiceImpl implements MatchService {
                 sumScores += ts;
             }
         }
-        Double C = computeGlobalPriorMean01ForBM(sumReviews, sumScores);
-
+        Double C = computeGlobalPriorMean01ForBM(sumReviews, sumScores); // 0~1 스케일 전역 평균
 
         //후보 점수 계산
         record Scored(BusinessMan businessMan, double score01) {
@@ -225,14 +224,14 @@ public class MatchServiceImpl implements MatchService {
         List<Scored> scored = new ArrayList<>();
 
         for (BusinessMan businessMan : businessManList) {
-            Set<String> bmCategories = bmCategoryNames(businessMan);
-            Set<String> bmMoods = bmMoodNames(businessMan);
-            Set<String> bmPromotions = bmPromotionNames(businessMan);
+            //자영업자 특성 세트 정규화
+            Set<String> bmCategories = bmCategoryNames(businessMan); //업종
+            Set<String> bmMoods = bmMoodNames(businessMan); //분위기
+            Set<String> bmPromotions = bmPromotionNames(businessMan); //홍보방식
 
             //업종 <-> 토픽 유사도 (자카드)
             double sCategory = SimilarityUtils.jaccard(influencerTopics, bmCategories);
-            // double sMoodStyle = DomainSimilarity.softJaccard(influencerStyles, bmMoods, DomainSimilarity::styleMoodSim);
-            //double sPromoPlatform = DomainSimilarity.softJaccard(influencerPlatforms, bmPromos, DomainSimilarity::platformPromoSim);
+
             //분위기 <->스타일 유사도 (소프트 자카드)
             double sMoodStyle = DomainSimilarity.softJaccard(bmMoods, influencerStyles, DomainSimilarity::moodStyleSim);
 
@@ -241,14 +240,15 @@ public class MatchServiceImpl implements MatchService {
 
             //평판 점수 (베이지안)
             double avg01 = avgRating01Of(businessMan);
+            Long rc = reviewCountOf(businessMan);
             double sReputation = SimilarityUtils.bayesianAverage(avg01, reviewCountOf(businessMan), C, m);
 
             //최종점수
             //reach 점수는 인플루언서에게만 해당하므로 제외
-            double final01 =
-                    props.getWCategory() * sCategory
-                            + props.getWMoodStyle() * sMoodStyle
-                            + props.getWReputation() * sReputation;
+            double final01 = props.getWCategory() * sCategory +
+                             props.getWMoodStyle() * sMoodStyle +
+                             props.getWReputation() * sReputation +
+                    props.getWPromoPlatform() * sPromotionPlatform;
             scored.add(new Scored(businessMan, final01));
         }
         //최종 리턴 TOP5
@@ -324,7 +324,7 @@ public class MatchServiceImpl implements MatchService {
                 workPlace.getMinBudget(),
                 workPlace.getAddress(),
                 finalScore
-                );
+        );
     }
     // ================== 내부 헬퍼/공용 ==================
 
