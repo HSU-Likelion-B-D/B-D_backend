@@ -11,7 +11,7 @@ import lombok.*;
 public class Payment {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PAYMENT")
+    @Column(name = "PAYMENT_ID")
     private Long paymentId;
 
     @Enumerated(EnumType.STRING)
@@ -28,4 +28,12 @@ public class Payment {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "campaignId", nullable = false)
     private Campaign campaign;
+
+    public void updateBState(PaymentStatus paymentStatus) {
+        this.businessManState = paymentStatus;
+    }
+
+    public void updateIState(PaymentStatus paymentStatus) {
+        this.influencerState = paymentStatus;
+    }
 }

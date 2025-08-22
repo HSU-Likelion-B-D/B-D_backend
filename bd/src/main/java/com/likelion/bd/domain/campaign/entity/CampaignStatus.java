@@ -5,9 +5,9 @@ public enum CampaignStatus {
     PROPOSED("제안 받음"),
     CONFIRMED_IN_PROGRESS("확정 및 진행중"),
     COMPLETED("완료"),
-    CANCELED("취소"),
-    PAYMENT_PENDING("입금 대기");
+    CANCELED("취소");
 
+    //PAYMENT_PENDING("입금 대기");
     //ACCEPTED("수락"), REJECTED("거절")
 
 
