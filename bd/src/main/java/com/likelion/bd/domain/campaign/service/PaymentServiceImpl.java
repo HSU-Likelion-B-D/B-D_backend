@@ -1,10 +1,17 @@
 package com.likelion.bd.domain.campaign.service;
 
-import com.likelion.bd.domain.campaign.entity.Campaign;
-import com.likelion.bd.domain.campaign.entity.Payment;
-import com.likelion.bd.domain.campaign.entity.PaymentStatus;
+import com.likelion.bd.domain.campaign.entity.*;
 import com.likelion.bd.domain.campaign.repository.PaymentRepository;
+import com.likelion.bd.domain.campaign.web.dto.PaymentListRes;
+import com.likelion.bd.domain.campaign.web.dto.PaymentResponseReq;
+import com.likelion.bd.domain.user.entity.UserRoleType;
+import com.likelion.bd.domain.user.repository.UserRepository;
+import com.likelion.bd.global.exception.CustomException;
+import com.likelion.bd.global.jwt.UserPrincipal;
+import com.likelion.bd.global.response.code.campaign.PaymentErrorResponseCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,18 +21,89 @@ public class PaymentServiceImpl implements PaymentService {
 
     private static final int FEE = 10;
 
+    private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
 
     @Override
     @Transactional
     public void createPayment(Campaign campaign) {
         Payment payment = Payment.builder()
-                .businessManState(PaymentStatus.WAITING)
-                .influencerState(PaymentStatus.PAYMENT_PENDING)
+                .businessManState(PaymentStatus.PAYMENT_PENDING)
+                .influencerState(PaymentStatus.WAITING)
                 .fee(FEE)
                 .campaign(campaign)
                 .build();
 
         paymentRepository.save(payment);
+    }
+
+    @Override
+    public Page<PaymentListRes> showPayment(
+            UserPrincipal userPrincipal,
+            CampaignStatus status,
+            Boolean all,
+            Pageable pageable
+    ) {
+        // 1. Repository를 호출하여 사용자와 관련된 Payment 목록을 Page 형태로 가져온다.
+        Page<Payment> payments = paymentRepository.findPaymentsByUser(
+                userPrincipal.getId(),
+                status,
+                all,
+                pageable
+        );
+
+        // 2. Page 객체의 .map() 기능을 사용해 Page<Payment>를 Page<PaymentListRes>로 변환한다.
+        return payments.map(payment -> {
+            // JOIN FETCH로 가져왔기 때문에 추가 쿼리 없이 바로 사용 가능
+            Campaign campaign = payment.getCampaign();
+            Proposal proposal = campaign.getProposal();
+
+            // 실 납부금액 계산
+            String offerBudget = proposal.getOfferBudget();
+            long longOfferBudget = Long.parseLong(offerBudget.replace(",", "")); // "330,000" -> "330000"
+            int fee = payment.getFee();
+            long totalPaid = longOfferBudget * fee + longOfferBudget;
+
+            // 4. 로그인한 유저의 역할에 따라 보여줄 상태(status)를 결정
+            String myStatus;
+            if (userPrincipal.getRole().equals(UserRoleType.BUSINESS.toString())) {
+                myStatus = payment.getBusinessManState().getDescription();
+            } else { // INFLUENCER일 경우
+                myStatus = payment.getInfluencerState().getDescription();
+            }
+            System.out.println(userPrincipal.getRole());
+            System.out.println(myStatus);
+
+            // 5. 최종적으로 DTO를 생성하여 반환한다.
+            return new PaymentListRes(
+                    payment.getPaymentId(),
+                    proposal.getTitle(),
+                    offerBudget,
+                    fee,
+                    totalPaid,
+                    myStatus
+            );
+        });
+    }
+
+    @Override
+    @Transactional
+    public void updatePayment( // 추후 실제 결제 기능을 넣고 나면 변경될 예정
+            UserPrincipal userPrincipal,
+            PaymentResponseReq paymentResponseReq
+    ) {
+        Payment payment = paymentRepository.findById(paymentResponseReq.getPaymentId())
+                .orElseThrow(() -> new CustomException(PaymentErrorResponseCode.PAYMENT_NOT_FOUND_404));
+
+        Campaign campaign = payment.getCampaign();
+
+        if (userPrincipal.getRole().equals(UserRoleType.BUSINESS.toString())) { // 자영업자 일 때
+            // 돈을 지불한 상황으로 가정
+            payment.updateBState(PaymentStatus.PAYMENT_COMPLETED);
+            payment.updateIState(PaymentStatus.PAYMENT_DUE);
+        } else { // 인플루언서 일 때
+            payment.updateIState(PaymentStatus.COMPLETED);
+            payment.updateBState(PaymentStatus.COMPLETED);
+        }
     }
 }
