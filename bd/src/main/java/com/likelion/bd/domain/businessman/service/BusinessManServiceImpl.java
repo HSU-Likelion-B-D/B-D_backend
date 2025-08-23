@@ -118,18 +118,16 @@ public class BusinessManServiceImpl implements BusinessManService {
         BusinessMan businessMan = businessManRepository.findByUserUserId(userPrincipal.getId())
                 .orElseThrow(()->new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
 
-        User user = businessMan.getUser();
         WorkPlace workPlace = businessMan.getWorkPlace();
 
         return new WorkPlaceUpdateInitRes(
                 workPlace.getName(),
-                user.getIntroduction(),
                 workPlace.getAddress(),
                 workPlace.getDetailAddress(),
                 workPlace.getOpenTime().toString(),
                 workPlace.getCloseTime().toString(),
-                workPlace.getMinBudget().toString(),
-                workPlace.getMaxBudget().toString()
+                workPlace.getMinBudget(),
+                workPlace.getMaxBudget()
         );
     }
 
