@@ -3,6 +3,7 @@ package com.likelion.bd.domain.match.web.dto;
 import java.util.List;
 
 public record RecommendBusinessManRes(
+        Long userId,
         String imgUrl, //프로필이미지 url
         String nickname, //닉네임
         String avgScore, //평균 별점

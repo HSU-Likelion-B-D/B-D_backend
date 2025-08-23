@@ -284,6 +284,7 @@ public class MatchServiceImpl implements MatchService {
         String formatFollower = activity.formatFollowers();
 
         return new RecommendInfluencerRes(
+                user.getUserId(),
                 user.getProfileImage(),
                 user.getNickname(),
                 formatAvgScore(influencer.getTotalScore(), influencer.getReviewCount()),
@@ -317,6 +318,7 @@ public class MatchServiceImpl implements MatchService {
         }
 
         return new RecommendBusinessManRes(
+                user.getUserId(),
                 user.getProfileImage(),
                 user.getNickname(),
                 formatAvgScore(businessMan.getTotalScore(), businessMan.getReviewCount()),

@@ -3,6 +3,7 @@ package com.likelion.bd.domain.match.web.dto;
 import java.util.List;
 
 public record RecommendInfluencerRes(
+        Long userId,
         String imgUrl,
         String nickname,
         String avgScore,
