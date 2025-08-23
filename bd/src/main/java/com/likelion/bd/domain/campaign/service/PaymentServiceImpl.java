@@ -4,6 +4,7 @@ import com.likelion.bd.domain.campaign.entity.*;
 import com.likelion.bd.domain.campaign.repository.PaymentRepository;
 import com.likelion.bd.domain.campaign.web.dto.PaymentListRes;
 import com.likelion.bd.domain.campaign.web.dto.PaymentResponseReq;
+import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
@@ -58,6 +59,10 @@ public class PaymentServiceImpl implements PaymentService {
             Campaign campaign = payment.getCampaign();
             Proposal proposal = campaign.getProposal();
 
+            User user = userPrincipal.getId().equals(campaign.getSenderId()) ?
+                    userRepository.getUserByUserId(campaign.getReceiverId()) :
+                    userRepository.getUserByUserId(campaign.getSenderId());
+
             // 실 납부금액 계산
             String offerBudget = proposal.getOfferBudget();
             long longOfferBudget = Long.parseLong(offerBudget.replace(",", "")); // "330,000" -> "330000"
@@ -77,10 +82,13 @@ public class PaymentServiceImpl implements PaymentService {
             // 5. 최종적으로 DTO를 생성하여 반환한다.
             return new PaymentListRes(
                     payment.getPaymentId(),
+                    user.getProfileImage(),
                     proposal.getTitle(),
                     offerBudget,
                     fee,
                     totalPaid,
+                    proposal.getStartDate().toString(),
+                    proposal.getEndDate().toString(),
                     myStatus
             );
         });
