@@ -41,19 +41,31 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Page<PaymentListRes> showPayment(
             UserPrincipal userPrincipal,
-            CampaignStatus status,
+            PaymentStatus status,
             Boolean all,
             Pageable pageable
     ) {
-        // 1. Repository를 호출하여 사용자와 관련된 Payment 목록을 Page 형태로 가져온다.
-        Page<Payment> payments = paymentRepository.findPaymentsByUser(
-                userPrincipal.getId(),
-                status,
-                all,
-                pageable
-        );
 
-        // 2. Page 객체의 .map() 기능을 사용해 Page<Payment>를 Page<PaymentListRes>로 변환한다.
+        Page<Payment> payments;
+        String userRole = userPrincipal.getRole();
+        // Repository를 호출하여 사용자와 관련된 Payment 목록을 Page 형태로 가져온다.
+        if (userRole.equals(UserRoleType.BUSINESS.toString())) {
+            payments = paymentRepository.findPaymentsForBusiness(
+                    userPrincipal.getId(),
+                    status,
+                    all,
+                    pageable
+            );
+        } else {
+            payments = paymentRepository.findPaymentsForInfluencer(
+                    userPrincipal.getId(),
+                    status,
+                    all,
+                    pageable
+            );
+        }
+
+        // Page 객체의 .map() 기능을 사용해 Page<Payment>를 Page<PaymentListRes>로 변환한다.
         return payments.map(payment -> {
             // JOIN FETCH로 가져왔기 때문에 추가 쿼리 없이 바로 사용 가능
             Campaign campaign = payment.getCampaign();
@@ -67,19 +79,20 @@ public class PaymentServiceImpl implements PaymentService {
             String offerBudget = proposal.getOfferBudget();
             long longOfferBudget = Long.parseLong(offerBudget.replace(",", "")); // "330,000" -> "330000"
             int fee = payment.getFee();
-            long totalPaid = longOfferBudget * fee + longOfferBudget;
 
-            // 4. 로그인한 유저의 역할에 따라 보여줄 상태(status)를 결정
+            long totalPaid;
             String myStatus;
-            if (userPrincipal.getRole().equals(UserRoleType.BUSINESS.toString())) {
+            if (userRole.equals(UserRoleType.BUSINESS.toString())) {
+                totalPaid = longOfferBudget / 100 * fee + longOfferBudget;
+
                 myStatus = payment.getBusinessManState().getDescription();
-            } else { // INFLUENCER일 경우
+            } else {
+                totalPaid = longOfferBudget - (longOfferBudget / 100 * fee);
+
                 myStatus = payment.getInfluencerState().getDescription();
             }
-            System.out.println(userPrincipal.getRole());
-            System.out.println(myStatus);
 
-            // 5. 최종적으로 DTO를 생성하여 반환한다.
+            // 최종적으로 DTO를 생성하여 반환한다.
             return new PaymentListRes(
                     payment.getPaymentId(),
                     user.getProfileImage(),

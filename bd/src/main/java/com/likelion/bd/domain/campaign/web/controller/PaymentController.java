@@ -1,6 +1,7 @@
 package com.likelion.bd.domain.campaign.web.controller;
 
 import com.likelion.bd.domain.campaign.entity.CampaignStatus;
+import com.likelion.bd.domain.campaign.entity.PaymentStatus;
 import com.likelion.bd.domain.campaign.service.PaymentService;
 import com.likelion.bd.domain.campaign.web.dto.PaymentListRes;
 import com.likelion.bd.domain.campaign.web.dto.PaymentResponseReq;
@@ -33,7 +34,7 @@ public class PaymentController {
      */
     public ResponseEntity<SuccessResponse<?>> showPayment(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestParam(required = false) CampaignStatus status, // status 선택적 파라미터로 변경
+            @RequestParam(required = false) PaymentStatus status, // status 선택적 파라미터로 변경
             @RequestParam(defaultValue = "false") boolean all,
             @PageableDefault(size = 6) Pageable pageable
     ) {

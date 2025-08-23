@@ -1,7 +1,5 @@
 package com.likelion.bd.domain.campaign.web.dto;
 
-import jakarta.validation.constraints.NotBlank;
-
 public record PaymentListRes(
         Long paymentId,
         String imgUrl,

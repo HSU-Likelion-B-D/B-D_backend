@@ -2,6 +2,7 @@ package com.likelion.bd.domain.campaign.service;
 
 import com.likelion.bd.domain.campaign.entity.Campaign;
 import com.likelion.bd.domain.campaign.entity.CampaignStatus;
+import com.likelion.bd.domain.campaign.entity.PaymentStatus;
 import com.likelion.bd.domain.campaign.web.dto.PaymentListRes;
 import com.likelion.bd.domain.campaign.web.dto.PaymentResponseReq;
 import com.likelion.bd.global.jwt.UserPrincipal;
@@ -14,7 +15,7 @@ public interface PaymentService {
 
     Page<PaymentListRes> showPayment(
             UserPrincipal userPrincipal,
-            CampaignStatus status,
+            PaymentStatus status,
             Boolean all,
             Pageable pageable);
 
