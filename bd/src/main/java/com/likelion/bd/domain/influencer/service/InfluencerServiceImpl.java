@@ -145,6 +145,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         return new ActivityFormRes(
                 influencer.getInfluencerId(),
                 activity.getActivityName(),
+                activity.getSnsUrl(),
                 activity.getFollowerCount(),
                 activity.getUploadFrequency().getValue(),
                 activity.getBankName(),

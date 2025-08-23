@@ -27,10 +27,10 @@ public class ActivityUpdateReq {
     private String bankName; // 은행명
     private String accountNumber; // 계좌 번호
 
-    @PositiveOrZero(message = "최소 희망 금액은 0 이상이어야 합니다.")
+    @NotBlank(message = "최소 희망 금액은 필수 입력 항목입니다.")
     private String minBudget; // 최소 희망 금액
 
-    @PositiveOrZero(message = "최대 희망 금액은 0 이상이어야 합니다.")
+    @NotBlank(message = "최대 희망 금액은 필수 입력 항목입니다.")
     private String maxBudget; // 최대 희망 금액
 
     private List<Long> platformIds; // 활동 플랫폼 카테고리

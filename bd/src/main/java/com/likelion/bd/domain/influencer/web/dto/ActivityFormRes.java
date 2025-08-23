@@ -5,6 +5,7 @@ import java.util.List;
 public record ActivityFormRes(
         Long influencerId,
         String activityName,
+        String snsUrl,
         Long followerCount,
         int uploadFrequency,
         String bankName,
