@@ -350,4 +350,19 @@ public class InfluencerServiceImpl implements InfluencerService {
                 businessMans
         );
     }
+
+    @Override
+    public InfluencerBankInfoRes bankInfo(Long userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
+
+        Influencer influencer = influencerRepository.findByUserUserId(userId)
+                .orElseThrow(() -> new CustomException(InfluencerErrorResponseCode.INFLUENCER_NOT_FOUND_404));
+
+        return new InfluencerBankInfoRes(
+                user.getName(),
+                influencer.getActivity().getBankName(),
+                influencer.getActivity().getAccountNumber()
+        );
+    }
 }

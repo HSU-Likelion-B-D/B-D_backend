@@ -14,4 +14,6 @@ public interface InfluencerService {
     InfluencerMyPageRes myPage(Long userId);
 
     InfluencerHomeRes home(Long userId);
+
+    InfluencerBankInfoRes bankInfo(Long userId);
 }

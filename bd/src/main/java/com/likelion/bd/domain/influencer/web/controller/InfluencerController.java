@@ -78,4 +78,16 @@ public class InfluencerController {
                 .status(HttpStatus.OK)
                 .body(SuccessResponse.ok(influencerHomeRes));
     }
+
+    @GetMapping("/bank")
+    public ResponseEntity<SuccessResponse<?>> bank(
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+
+        InfluencerBankInfoRes influencerBankInfoRes = influencerService.bankInfo(userPrincipal.getId());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(SuccessResponse.ok(influencerBankInfoRes));
+    }
 }
