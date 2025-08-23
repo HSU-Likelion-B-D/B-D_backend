@@ -8,7 +8,7 @@ public record RecommendInfluencerRes(
         String avgScore,
         Long reviewCount,
         List<String> platform,
-        Long followerCount,
+        String followerCount,
         String minBudget,
         List<String> contentTopic,
         Integer recommendScore

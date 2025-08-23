@@ -281,13 +281,15 @@ public class MatchServiceImpl implements MatchService {
         if (weightSum > 0) {
             finalScore = (int) Math.round((score01 / weightSum) * 100);
         }
+        String formatFollower = activity.formatFollowers();
+
         return new RecommendInfluencerRes(
                 user.getProfileImage(),
                 user.getNickname(),
                 formatAvgScore(influencer.getTotalScore(), influencer.getReviewCount()),
                 influencer.getReviewCount(),
                 platformList,
-                activity.getFollowerCount(),
+                formatFollower,
                 activity.getMinBudget(),
                 contentTopicList,
                 finalScore
