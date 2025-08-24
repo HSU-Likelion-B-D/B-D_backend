@@ -1,5 +1,7 @@
 package com.likelion.bd.domain.campaign.service;
 
+import com.likelion.bd.domain.businessman.entity.BusinessMan;
+import com.likelion.bd.domain.businessman.repository.BusinessManRepository;
 import com.likelion.bd.domain.campaign.entity.*;
 import com.likelion.bd.domain.campaign.repository.PaymentRepository;
 import com.likelion.bd.domain.campaign.web.dto.PaymentListRes;
@@ -9,12 +11,15 @@ import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.jwt.UserPrincipal;
+import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponseCode;
 import com.likelion.bd.global.response.code.campaign.PaymentErrorResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
+    private final BusinessManRepository businessManRepository;
 
     @Override
     @Transactional
@@ -82,6 +88,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             long totalPaid;
             String myStatus;
+            Optional<PaymentListRes.reviewInfo> reviewInfo = Optional.empty();
             if (userRole.equals(UserRoleType.BUSINESS.toString())) {
                 totalPaid = longOfferBudget / 100 * fee + longOfferBudget;
 
@@ -90,6 +97,14 @@ public class PaymentServiceImpl implements PaymentService {
                 totalPaid = longOfferBudget - (longOfferBudget / 100 * fee);
 
                 myStatus = payment.getInfluencerState().getDescription();
+
+                BusinessMan businessMan = businessManRepository.findByUserUserId(user.getUserId())
+                        .orElseThrow(() -> new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
+
+                reviewInfo = Optional.of(new PaymentListRes.reviewInfo(
+                        businessMan.getWorkPlace().getName(),
+                        businessMan.getUser().getIntroduction()
+                ));
             }
 
             // 최종적으로 DTO를 생성하여 반환한다.
@@ -102,7 +117,9 @@ public class PaymentServiceImpl implements PaymentService {
                     totalPaid,
                     proposal.getStartDate().toString(),
                     proposal.getEndDate().toString(),
-                    myStatus
+                    myStatus,
+                    user.getUserId(),
+                    reviewInfo
             );
         });
     }
