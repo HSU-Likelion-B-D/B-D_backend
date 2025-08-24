@@ -47,6 +47,11 @@ public class CampaignServiceImpl implements CampaignService {
         User recipient = userRepository.findByUserId(campaignCreateReq.getRecipientId())
                 .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
 
+        // 같은 역할군에게 보내는 것을 방지
+        if (senderRole.equals(recipient.getRole())) {
+            new CustomException(CampaignErrorResponseCode.SAME_ROLE_PROPOSAL_409);
+        }
+
         // 제안서 조회
         Proposal proposal = proposalRepository.findById(campaignCreateReq.getProposalId())
                 .orElseThrow(() -> new CustomException(ProposalErrorResponseCode.PROPOSAL_NOT_FOUND_404));
@@ -55,6 +60,18 @@ public class CampaignServiceImpl implements CampaignService {
         if (!proposal.getWriterId().equals(senderId)) {
             throw new CustomException(AuthErrorResponseCode.FORBIDDEN_403);
         }
+
+        // 동일한 제안이 이미 존재하는지 확인
+        boolean isDuplicate = campaignRepository.existsBySenderIdAndReceiverIdAndProposalProposalId(
+                senderId,
+                recipient.getUserId(),
+                proposal.getProposalId()
+        );
+
+        if (isDuplicate) {
+            throw new CustomException(CampaignErrorResponseCode.CAMPAIGN_ALREADY_EXISTS_409);
+        }
+
 
         Campaign campaign = Campaign.builder()
                 .senderId(senderId)

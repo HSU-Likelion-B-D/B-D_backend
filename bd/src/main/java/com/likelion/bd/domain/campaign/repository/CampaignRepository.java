@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface CampaignRepository extends JpaRepository<Campaign, Long> {
     /*
      * 모두보기(all=true): 상태 무시.
@@ -59,4 +61,8 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
                                           @Param("role") UserRoleType role,
                                           @Param("state") CampaignStatus state,
                                           Pageable pageable);
+
+
+    // 발신자, 수신자, 제안서 ID가 모두 일치하는 캠페인이 존재하는지 확인
+    boolean existsBySenderIdAndReceiverIdAndProposalProposalId(Long senderId, Long receiverId, Long proposalId);
 }
