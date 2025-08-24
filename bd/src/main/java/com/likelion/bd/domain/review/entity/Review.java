@@ -37,8 +37,4 @@ public class Review extends BaseEntity {
 
     @Column(name = "CONTENT", nullable = false, columnDefinition = "TEXT")
     private String content; // 리뷰 내용
-
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "campaignId", nullable = false)
-    private Campaign campaign;
 }
