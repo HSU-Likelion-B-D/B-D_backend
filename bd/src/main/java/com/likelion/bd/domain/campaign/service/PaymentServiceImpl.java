@@ -6,11 +6,14 @@ import com.likelion.bd.domain.campaign.entity.*;
 import com.likelion.bd.domain.campaign.repository.PaymentRepository;
 import com.likelion.bd.domain.campaign.web.dto.PaymentListRes;
 import com.likelion.bd.domain.campaign.web.dto.PaymentResponseReq;
+import com.likelion.bd.domain.influencer.entity.Influencer;
+import com.likelion.bd.domain.influencer.repository.InfluencerRepository;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
 import com.likelion.bd.global.jwt.UserPrincipal;
+import com.likelion.bd.global.response.code.Influencer.InfluencerErrorResponseCode;
 import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponseCode;
 import com.likelion.bd.global.response.code.campaign.PaymentErrorResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
     private final BusinessManRepository businessManRepository;
+    private final InfluencerRepository influencerRepository;
 
     @Override
     @Transactional
@@ -96,6 +100,14 @@ public class PaymentServiceImpl implements PaymentService {
 
                 myStatus = payment.getBusinessManState().getDescription();
                 tf = payment.getTf();
+
+                Influencer influencer = influencerRepository.findByUserUserId(user.getUserId())
+                        .orElseThrow(() -> new CustomException(InfluencerErrorResponseCode.INFLUENCER_NOT_FOUND_404));
+
+                reviewInfo = Optional.of(new PaymentListRes.InfluencerInfo(
+                        influencer.getUser().getNickname(),
+                        influencer.getActivity().getActivityName()
+                ));
             } else {
                 totalPaid = longOfferBudget - (longOfferBudget / 100 * fee);
 
@@ -105,7 +117,7 @@ public class PaymentServiceImpl implements PaymentService {
                 BusinessMan businessMan = businessManRepository.findByUserUserId(user.getUserId())
                         .orElseThrow(() -> new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
 
-                reviewInfo = Optional.of(new PaymentListRes.reviewInfo(
+                reviewInfo = Optional.of(new PaymentListRes.BusinessManInfo(
                         businessMan.getWorkPlace().getName(),
                         businessMan.getUser().getIntroduction()
                 ));
