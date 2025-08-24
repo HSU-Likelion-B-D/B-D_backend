@@ -39,9 +39,6 @@ public class ReviewServiceImpl implements ReviewService {
         Long writerId = userPrincipal.getId();
         UserRoleType writerRole = UserRoleType.valueOf(userPrincipal.getRole());
 
-        Payment payment = paymentRepository.findById(reviewCreateReq.getPaymentId())
-                .orElseThrow(() -> new CustomException(PaymentErrorResponseCode.PAYMENT_NOT_FOUND_404));
-
         // 리뷰 대상 조회
         User reviewed = userRepository.findByUserId(reviewCreateReq.getReviewedId())
                 .orElseThrow(() -> new CustomException(UserErrorResponseCode.USER_NOT_FOUND_404));
@@ -69,6 +66,10 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewRepository.save(review);
 
-        payment.updateTF(true);
+        if (writerRole.equals(UserRoleType.BUSINESS)) {
+            Payment payment = paymentRepository.findById(reviewCreateReq.getPaymentId())
+                    .orElseThrow(() -> new CustomException(PaymentErrorResponseCode.PAYMENT_NOT_FOUND_404));
+            payment.updateTF(true);
+        }
     }
 }
