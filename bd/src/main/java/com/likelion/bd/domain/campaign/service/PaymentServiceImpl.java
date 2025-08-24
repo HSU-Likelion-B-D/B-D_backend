@@ -36,6 +36,7 @@ public class PaymentServiceImpl implements PaymentService {
     public void createPayment(Campaign campaign) {
         Payment payment = Payment.builder()
                 .businessManState(PaymentStatus.PAYMENT_PENDING)
+                .tf(false)
                 .influencerState(PaymentStatus.WAITING)
                 .fee(FEE)
                 .campaign(campaign)
@@ -88,15 +89,18 @@ public class PaymentServiceImpl implements PaymentService {
 
             long totalPaid;
             String myStatus;
+            Boolean tf;
             Optional<PaymentListRes.reviewInfo> reviewInfo = Optional.empty();
             if (userRole.equals(UserRoleType.BUSINESS.toString())) {
                 totalPaid = longOfferBudget / 100 * fee + longOfferBudget;
 
                 myStatus = payment.getBusinessManState().getDescription();
+                tf = payment.getTf();
             } else {
                 totalPaid = longOfferBudget - (longOfferBudget / 100 * fee);
 
                 myStatus = payment.getInfluencerState().getDescription();
+                tf = null;
 
                 BusinessMan businessMan = businessManRepository.findByUserUserId(user.getUserId())
                         .orElseThrow(() -> new CustomException(BusinessManErrorResponseCode.BUSINESSMAN_NOT_FOUND_404));
@@ -119,6 +123,8 @@ public class PaymentServiceImpl implements PaymentService {
                     proposal.getEndDate().toString(),
                     myStatus,
                     user.getUserId(),
+
+                    tf,
                     reviewInfo
             );
         });

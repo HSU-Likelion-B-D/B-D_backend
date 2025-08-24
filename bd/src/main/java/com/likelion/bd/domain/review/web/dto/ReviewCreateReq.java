@@ -21,4 +21,6 @@ public class ReviewCreateReq {
 
     @NotBlank(message = "리뷰 내용은 필수 입력 값 입니다.")
     private String content; // 리뷰 내용
+
+    private Long paymentId; // 자영업자 기준
 }

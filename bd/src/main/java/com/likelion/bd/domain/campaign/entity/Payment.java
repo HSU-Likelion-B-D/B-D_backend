@@ -18,6 +18,8 @@ public class Payment {
     @Column(name = "BUSINESSMAN_STATE", nullable = false)
     private PaymentStatus businessManState;
 
+    private Boolean tf; // 자영업자 리뷰 체크 용도
+
     @Enumerated(EnumType.STRING)
     @Column(name = "INFLUENCER_STATE", nullable = false)
     private PaymentStatus influencerState;
@@ -35,5 +37,9 @@ public class Payment {
 
     public void updateIState(PaymentStatus paymentStatus) {
         this.influencerState = paymentStatus;
+    }
+
+    public void updateTF(Boolean tf) {
+        this.tf = tf;
     }
 }

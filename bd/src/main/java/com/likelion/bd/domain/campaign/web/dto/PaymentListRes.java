@@ -14,6 +14,8 @@ public record PaymentListRes(
         String status, // 상태
         Long reviewedId,
 
+        Boolean tf, // 자영업자일 때, 리뷰 작성했는지 안했는지
+
         // 내가 인플루언서일 때, 상대 자영업자 정보, 있을 수도 없을 수도
         Optional<PaymentListRes.reviewInfo> reviewInfo
 ) {
