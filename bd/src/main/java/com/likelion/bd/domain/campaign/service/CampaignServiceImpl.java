@@ -79,7 +79,8 @@ public class CampaignServiceImpl implements CampaignService {
                 .receiverId(recipient.getUserId())
                 .receiverRole(recipient.getRole())
                 .proposal(proposal)
-                .state(CampaignStatus.WAITING) // 처음엔 대기중(WATING)
+                .senderState(CampaignStatus.WAITING)
+                .receiverState(CampaignStatus.PROPOSED)
                 .build();
 
         campaignRepository.save(campaign);
@@ -108,24 +109,32 @@ public class CampaignServiceImpl implements CampaignService {
                 : campaignRepository.findMyCampaignsByState(userId, UserRoleType.valueOf(role), state, pageReq);
 
         return campaignPage.map(c -> {
-            Proposal p = c.getProposal(); // fetch 되어 있음(@EntityGraph)
+            Proposal p = c.getProposal();
 
             String title = (p != null) ? p.getTitle() : null;
             String offerBudget  = (p != null) ? p.getOfferBudget() : null;
             LocalDate startDate = (p != null) ? p.getStartDate() : null;
             LocalDate endDate = (p != null) ? p.getEndDate() : null;
 
-            // 상태는 코드 문자열로
-            String statusStr = (c.getState() != null) ? c.getState().getKoLabel() : null;
+            // ✅ 이 캠페인에서 나의 상태를 결정하는 로직
+            CampaignStatus myStatus;
+            if (c.getSenderId().equals(userId)) {
+                // 내가 보낸 캠페인이면 senderState가 나의 상태
+                myStatus = c.getSenderState();
+            } else {
+                // 내가 받은 캠페인이면 receiverState가 나의 상태
+                myStatus = c.getReceiverState();
+            }
+            String statusStr = (myStatus != null) ? myStatus.getKoLabel() : null;
 
             return new CampaignListRes(
                     c.getCampaignId(),
-                    user.getProfileImage(), // imgUrl
+                    user.getProfileImage(),
                     title,
                     offerBudget,
                     startDate,
                     endDate,
-                    statusStr
+                    statusStr // 나의 상태를 기반으로 한 문자열
             );
         });
     }

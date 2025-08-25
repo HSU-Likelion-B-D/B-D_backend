@@ -36,26 +36,20 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
                                       @Param("role") UserRoleType role,
                                       Pageable pageable);
 
-    /*
-     * 상태 지정(모두보기 아님): state까지 필터.
-     * ((senderId = :userId AND senderRole = :role) OR (receiverId = :userId AND receiverRole = :role))
-     * AND c.state = :state
-     */
+    // 상태 지정 보기
     @EntityGraph(attributePaths = "proposal")
     @Query(value = """
-        SELECT DISTINCT c
-        FROM Campaign c
-        WHERE ( (c.senderId   = :userId AND c.senderRole   = :role)
-             OR (c.receiverId = :userId AND c.receiverRole = :role) )
-          AND c.state = :state
-        """,
+    SELECT DISTINCT c
+    FROM Campaign c
+    WHERE ( (c.senderId   = :userId AND c.senderRole   = :role AND c.senderState = :state)
+         OR (c.receiverId = :userId AND c.receiverRole = :role AND c.receiverState = :state) )
+    """,
             countQuery = """
-        SELECT COUNT(DISTINCT c.campaignId)
-        FROM Campaign c
-        WHERE ( (c.senderId   = :userId AND c.senderRole   = :role)
-             OR (c.receiverId = :userId AND c.receiverRole = :role) )
-          AND c.state = :state
-        """
+    SELECT COUNT(DISTINCT c.campaignId)
+    FROM Campaign c
+    WHERE ( (c.senderId   = :userId AND c.senderRole   = :role AND c.senderState = :state)
+         OR (c.receiverId = :userId AND c.receiverRole = :role AND c.receiverState = :state) )
+    """
     )
     Page<Campaign> findMyCampaignsByState(@Param("userId") Long userId,
                                           @Param("role") UserRoleType role,

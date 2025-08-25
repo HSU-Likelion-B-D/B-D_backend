@@ -31,8 +31,12 @@ public class Campaign {
     private UserRoleType receiverRole;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "STATE")
-    private CampaignStatus state;
+    @Column(name = "sender_State")
+    private CampaignStatus senderState;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "receiver_State")
+    private CampaignStatus receiverState;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "proposalId", nullable = false)
@@ -40,9 +44,11 @@ public class Campaign {
 
     public void updateState(String state) {
         if (state.equals("yes")) {
-            this.state = CampaignStatus.CONFIRMED_IN_PROGRESS;
+            this.senderState = CampaignStatus.CONFIRMED_IN_PROGRESS;
+            this.receiverState = CampaignStatus.CONFIRMED_IN_PROGRESS;
         } else if (state.equals("no")) {
-            this.state = CampaignStatus.CANCELED;
+            this.senderState = CampaignStatus.CANCELED;
+            this.receiverState = CampaignStatus.CANCELED;
         }
     }
 }
