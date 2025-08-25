@@ -12,6 +12,9 @@ public record RecommendInfluencerRes(
         String followerCount,
         String minBudget,
         List<String> contentTopic,
-        Integer recommendScore
+        Integer recommendScore,
+
+        String activityName,
+        String introduction
 ) {
 }

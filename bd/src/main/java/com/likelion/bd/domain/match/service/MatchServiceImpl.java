@@ -293,7 +293,10 @@ public class MatchServiceImpl implements MatchService {
                 formatFollower,
                 activity.getMinBudget(),
                 contentTopicList,
-                finalScore
+                finalScore,
+
+                activity.getActivityName(),
+                user.getIntroduction()
         );
     }
 
@@ -327,7 +330,10 @@ public class MatchServiceImpl implements MatchService {
                 moodList,
                 workPlace.getMinBudget(),
                 workPlace.getAddress(),
-                finalScore
+                finalScore,
+
+                workPlace.getName(),
+                user.getIntroduction()
         );
     }
     // ================== 내부 헬퍼/공용 ==================

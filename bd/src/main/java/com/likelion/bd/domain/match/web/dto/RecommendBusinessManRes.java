@@ -12,6 +12,9 @@ public record RecommendBusinessManRes(
         List<String> moodList, //가게 분위기
         String minBudget, //최소 지급 금액
         String region, //지역
-        int finalScore
+        int finalScore,
+
+        String workPlaceName,
+        String introduction
 ) {
 }
