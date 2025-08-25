@@ -138,7 +138,7 @@ public class UserController {
 
     // 비밀번호 변경
     @PostMapping("/pwchange")
-    public  ResponseEntity<SuccessResponse<?>> changePassword(
+    public ResponseEntity<SuccessResponse<?>> changePassword(
             @RequestBody @Valid UserSigninReq userSigninReq
     ) {
 
