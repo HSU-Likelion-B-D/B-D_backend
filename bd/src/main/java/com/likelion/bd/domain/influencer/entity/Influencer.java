@@ -1,6 +1,7 @@
 package com.likelion.bd.domain.influencer.entity;
 
 import com.likelion.bd.domain.user.entity.User;
+import com.likelion.bd.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.math.RoundingMode;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "influencer")
-public class Influencer {
+public class Influencer extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "INFLUENCER_ID")
