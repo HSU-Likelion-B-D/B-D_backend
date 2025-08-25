@@ -83,6 +83,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/payments").hasAnyRole("BUSINESS","INFLUENCER")
                         // 리뷰
                         .requestMatchers(HttpMethod.POST, "/api/review/write").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/review/keywords").hasAnyRole("BUSINESS","INFLUENCER")
                         //추천
                         .requestMatchers("/api/businessman/me/recommendations").hasRole("BUSINESS")
                         .requestMatchers("/api/influencer/me/recommendations").hasRole("INFLUENCER")
