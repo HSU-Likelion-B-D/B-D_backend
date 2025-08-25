@@ -12,9 +12,9 @@ public interface InfluencerMatchRepository extends JpaRepository<Influencer, Lon
     //지금 당장은 InfluencerRepository 사용해도 되지만 나중에 쿼리를 직접 작성하여 최적화할때는 여기 있는 레포지토리 사용해야함
 
     @Query("SELECT DISTINCT i FROM Influencer i " +
-    "JOIN i.activity a " +
-    "JOIN  a.activityContentTopicList act " +
-    "JOIN act.contentTopic ct " +
+    "LEFT JOIN i.activity a " +
+    "LEFT JOIN  a.activityContentTopicList act " +
+    "LEFT JOIN act.contentTopic ct " +
     "WHERE ct.name IN :categoryNames")
     List<Influencer> findInfluencerByCategoryNames(@Param("categoryNames") Set<String> categoryNames);
 }
