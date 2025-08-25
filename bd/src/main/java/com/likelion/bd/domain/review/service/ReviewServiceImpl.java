@@ -9,28 +9,37 @@ import com.likelion.bd.domain.influencer.repository.InfluencerRepository;
 import com.likelion.bd.domain.review.entity.Review;
 import com.likelion.bd.domain.review.repository.ReviewRepository;
 import com.likelion.bd.domain.review.web.dto.ReviewCreateReq;
+import com.likelion.bd.domain.review.web.dto.ReviewKeywordRes;
 import com.likelion.bd.domain.user.entity.User;
 import com.likelion.bd.domain.user.entity.UserRoleType;
 import com.likelion.bd.domain.user.repository.UserRepository;
 import com.likelion.bd.global.exception.CustomException;
+import com.likelion.bd.global.external.ai.AiService;
 import com.likelion.bd.global.jwt.UserPrincipal;
 import com.likelion.bd.global.response.code.Influencer.InfluencerErrorResponseCode;
 import com.likelion.bd.global.response.code.businessMan.BusinessManErrorResponseCode;
 import com.likelion.bd.global.response.code.campaign.PaymentErrorResponseCode;
+import com.likelion.bd.global.response.code.review.ReviewErrorResponseCode;
 import com.likelion.bd.global.response.code.user.UserErrorResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
-    private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final BusinessManRepository businessManRepository;
     private final InfluencerRepository influencerRepository;
     private final PaymentRepository paymentRepository;
+    private final ReviewRepository reviewRepository;
+
+    private final AiService aiService;
 
     @Override
     @Transactional
@@ -71,5 +80,26 @@ public class ReviewServiceImpl implements ReviewService {
                     .orElseThrow(() -> new CustomException(PaymentErrorResponseCode.PAYMENT_NOT_FOUND_404));
             payment.updateTF(true);
         }
+    }
+
+    @Override
+    public ReviewKeywordRes extractKeywordsForUser(UserPrincipal userPrincipal) {
+        List<Review> userReviews = reviewRepository.findByReviewedId(userPrincipal.getId());
+
+        if (userReviews.isEmpty()) {
+            throw new CustomException(ReviewErrorResponseCode.REVIEW_NOT_FOUND_404);
+        }
+
+        // 리뷰를 하나의 텍스트로 연결
+        String combinedReviewText = userReviews.stream()
+                .map(Review::getContent)
+                .collect(Collectors.joining("\n---\n"));
+
+
+        String extractedKeywords = aiService.extractKeywords(combinedReviewText);
+
+        List<String> keywordList = Arrays.asList(extractedKeywords.split(",\\s*"));
+
+        return new ReviewKeywordRes(keywordList);
     }
 }
